@@ -1,0 +1,332 @@
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+.login-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow: hidden;
+}
+
+/* Área da marca */
+
+.brand-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-image {
+  display: block;
+  width: 810px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.brand-symbol {
+  width: 57px;
+  height: 61px;
+  flex-shrink: 0;
+}
+
+.brand-symbol svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.brand-text h1 {
+  margin: 0;
+  color: #aeb6c4;
+  font-size: clamp(25px, 3vw, 39px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -1.5px;
+}
+
+.brand-text span {
+  display: block;
+  color: #a9c7f2;
+  font-size: clamp(17px, 2.1vw, 25px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 5px;
+}
+
+/* Área do formulário */
+
+.login-section {
+  width: 50%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 50px 30px 0;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 580px;
+  min-height: 600px;
+  padding: 50px 36px 40px;
+  background: #0861f5;
+  border-radius: 22px;
+  box-shadow: 7px 7px 0 #ff808b;
+}
+
+.login-card h2 {
+  margin: 0 0 32px;
+  color: #000000;
+  font-size: 42px;
+  font-weight: 400;
+  text-align: left;
+}
+
+.login-input {
+  height: 46px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  margin-bottom: 20px;
+  background: #ffffff;
+  border-radius: 25px;
+  box-shadow: 0 3px 5px rgb(0 0 0 / 20%);
+}
+
+.login-input svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  stroke: #111111;
+  stroke-width: 1.7;
+  fill: none;
+}
+
+.login-input input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #222222;
+  font-size: 15px;
+}
+
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.remember-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #000000;
+  font-size: 15px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.remember-option input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+
+.toggle-switch {
+  width: 42px;
+  height: 23px;
+  flex-shrink: 0;
+  display: inline-block;
+  position: relative;
+  background: #999999;
+  border-radius: 20px;
+  transition: background 0.2s;
+}
+
+.toggle-switch::after {
+  content: "";
+  width: 19px;
+  height: 19px;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.remember-option input:checked + .toggle-switch {
+  background: #ff7584;
+}
+
+.remember-option input:checked + .toggle-switch::after {
+  transform: translateX(19px);
+}
+
+.remember-option input:checked + .toggle-switch::after {
+  transform: translateX(19px);
+}
+
+.forgot-password {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #000000;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.login-button {
+  display: block;
+  width: 90%;
+  height: 44px;
+  margin: 42px auto 0;
+  border: none;
+  border-radius: 25px;
+  background: #ff7584;
+  color: #000000;
+  font-size: 16px;
+  cursor: pointer;
+  transition: filter 0.2s, transform 0.2s;
+}
+
+.login-button:hover {
+  filter: brightness(1.06);
+}
+
+.login-button:active {
+  transform: scale(0.98);
+}
+
+.create-account {
+  display: block;
+  margin: 38px auto 0;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: #000000;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.create-account:hover,
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* Ajustes para telas pequenas */
+
+@media (max-width: 600px) {
+  .login-page {
+    flex-direction: column;
+    justify-content: center;
+    gap: 35px;
+    padding: 35px 20px;
+    overflow: auto;
+  }
+
+  .brand-section {
+    flex: 0 0 auto;
+    padding: 0;
+  }
+
+  .login-section {
+    width: 100%;
+    min-height: auto;
+    padding: 0 10px 5px 0;
+  }
+
+  .login-card {
+    max-width: 300px;
+    min-height: 270px;
+    padding: 30px 28px 24px;
+  }
+
+  .login-card h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .login-input {
+    height: 32px;
+    margin-bottom: 12px;
+  }
+
+  .login-input input {
+    font-size: 12px;
+  }
+
+  .login-input svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .remember-option,
+  .forgot-password,
+  .create-account {
+    font-size: 11px;
+  }
+
+  .toggle-switch {
+    width: 31px;
+    height: 17px;
+  }
+
+  .login-button {
+    height: 28px;
+    margin-top: 25px;
+    font-size: 12px;
+  }
+
+  .create-account {
+    margin-top: 25px;
+  }
+}
