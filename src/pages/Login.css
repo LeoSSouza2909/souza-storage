@@ -99,38 +99,48 @@ body {
 
 .login-card {
   width: 100%;
-  max-width: 580px;
-  min-height: 600px;
-  padding: 50px 36px 40px;
+  max-width: 540px;
+  min-height: 540px;
+  padding: 42px 34px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
   background: #0861f5;
   border-radius: 22px;
   box-shadow: 7px 7px 0 #ff808b;
 }
 
 .login-card h2 {
-  margin: 0 0 32px;
+  margin: 0 0 26px;
   color: #000000;
-  font-size: 42px;
+  font-size: 40px;
+  line-height: 1.2;
   font-weight: 400;
   text-align: left;
 }
 
 .login-input {
-  height: 46px;
   width: 100%;
+  height: 46px;
+  box-sizing: border-box;
+
   display: flex;
   align-items: center;
   gap: 12px;
+
   padding: 0 16px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+
   background: #ffffff;
   border-radius: 25px;
-  box-shadow: 0 3px 5px rgb(0 0 0 / 20%);
+  box-shadow: 0 3px 5px rgb(0 0 0 / 18%);
 }
 
 .login-input svg {
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
   stroke: #111111;
   stroke-width: 1.7;
@@ -142,9 +152,11 @@ body {
   min-width: 0;
   height: 100%;
   padding: 0;
+
   border: none;
   outline: none;
   background: transparent;
+
   color: #222222;
   font-size: 15px;
 }
@@ -154,15 +166,19 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 28px;
+
+  width: 100%;
+  margin-top: 10px;
 }
+
 
 .remember-option {
   display: flex;
   align-items: center;
   gap: 9px;
+
   color: #000000;
-  font-size: 15px;
+  font-size: 14px;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -180,11 +196,12 @@ body {
 
 
 .toggle-switch {
-  width: 42px;
-  height: 23px;
+  width: 40px;
+  height: 22px;
   flex-shrink: 0;
   display: inline-block;
   position: relative;
+
   background: #999999;
   border-radius: 20px;
   transition: background 0.2s;
@@ -192,16 +209,17 @@ body {
 
 .toggle-switch::after {
   content: "";
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
+
   position: absolute;
   top: 2px;
   left: 2px;
-  background: white;
+
+  background: #ffffff;
   border-radius: 50%;
   transition: transform 0.2s;
 }
-
 .remember-option input:checked + .toggle-switch {
   background: #ff7584;
 }
@@ -218,6 +236,7 @@ body {
   padding: 0;
   border: none;
   background: transparent;
+
   color: #000000;
   font-size: 13px;
   white-space: nowrap;
@@ -226,20 +245,24 @@ body {
 
 .login-button {
   display: block;
-  width: 90%;
-  height: 44px;
-  margin: 42px auto 0;
+  width: 92%;
+  min-height: 42px;
+  margin: 36px auto 0;
+  padding: 0 16px;
+
   border: none;
   border-radius: 25px;
   background: #ff7584;
+
   color: #000000;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
+
   transition: filter 0.2s, transform 0.2s;
 }
 
 .login-button:hover {
-  filter: brightness(1.06);
+  filter: brightness(1.05);
 }
 
 .login-button:active {
@@ -248,12 +271,16 @@ body {
 
 .create-account {
   display: block;
-  margin: 38px auto 0;
+  align-self: center;
+
+  margin: 28px auto 0;
   padding: 8px;
+
   border: none;
   background: transparent;
   color: #000000;
-  font-size: 15px;
+
+  font-size: 14px;
   cursor: pointer;
 }
 
