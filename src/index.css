@@ -30,6 +30,43 @@
   }
 }
 
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: #ffffff;
+}
+
+body {
+  min-height: 100vh;
+  display: block;
+  background: #ffffff;
+}
+
+#root {
+  min-height: 100vh;
+}
+#root {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.register-page {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;

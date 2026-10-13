@@ -1,9 +1,11 @@
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import logo from "../assets/logo.png"
 
 export default function Login() {
+  const navigate = useNavigate();
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
   const [lembrar, setLembrar] = useState(true);
@@ -95,9 +97,7 @@ export default function Login() {
           <button
             type="button"
             className="create-account"
-            onClick={() =>
-              alert("Adicione aqui a tela de criação de conta.")
-            }
+            onClick={() => navigate("/criar-conta")}
           >
             Criar Conta
           </button>

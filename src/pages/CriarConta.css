@@ -1,0 +1,278 @@
+
+/* Configuração geral */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Página de cadastro: mesma estrutura do Login */
+.register-page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* Área da logo: lado esquerdo */
+.register-brand {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+}
+
+.register-brand img {
+  display: block;
+  width: 810px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Área do formulário: lado direito */
+.register-page > .register-card {
+  width: 50%;
+  max-width: 590px;
+  min-height: 540px;
+  flex-shrink: 0;
+
+  margin-right: 50px;
+  padding: 42px 34px;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #0861f5;
+  border-radius: 22px;
+  box-shadow: 7px 7px 0 #ff808b;
+}
+
+/* Título */
+.register-card h1 {
+  margin: 0 0 26px;
+
+  color: #000000;
+  font-size: 40px;
+  line-height: 1.2;
+  font-weight: 400;
+  text-align: left;
+}
+
+/* Formulário */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  width: 100%;
+}
+
+/* Nome e CNPJ lado a lado */
+.register-name-cnpj {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+}
+
+/* Campos brancos com ícones */
+.register-field {
+  width: 100%;
+  height: 46px;
+  min-width: 0;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 16px;
+
+  background: #ffffff;
+  border-radius: 25px;
+  box-shadow: 0 3px 5px rgb(0 0 0 / 18%);
+}
+
+/* Divide igualmente o espaço entre Nome e CNPJ */
+.register-name-cnpj .register-field {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Ícones */
+.register-field svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+
+  color: #111111;
+  stroke: currentColor;
+}
+
+/* Inputs */
+.register-field input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+
+  padding: 0;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: #222222;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+}
+
+/* Cor do texto de orientação */
+.register-field input::placeholder {
+  color: #888888;
+  opacity: 1;
+}
+
+/* Botão Criar: mesmo estilo do Login */
+.register-button {
+  display: block;
+  width: 92%;
+  min-height: 42px;
+  flex-shrink: 0;
+
+  margin: 18px auto 0;
+  padding: 0 16px;
+
+  border: none;
+  border-radius: 25px;
+  background: #ff7584;
+
+  color: #000000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+
+  cursor: pointer;
+  transition: filter 0.2s, transform 0.2s;
+}
+
+.register-button:hover {
+  filter: brightness(1.05);
+}
+
+.register-button:active {
+  transform: scale(0.98);
+}
+
+/* Botão para voltar ao Login */
+.register-back {
+  display: block;
+  align-self: center;
+
+  margin: 20px auto 0;
+  padding: 8px;
+
+  border: none;
+  background: transparent;
+
+  color: #000000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.register-back:hover {
+  text-decoration: underline;
+}
+
+/* Responsividade para celulares */
+@media (max-width: 600px) {
+  .register-page {
+    flex-direction: column;
+    justify-content: center;
+    gap: 35px;
+
+    padding: 35px 20px;
+    overflow: auto;
+  }
+
+  .register-brand {
+    flex: 0 0 auto;
+    width: 100%;
+    padding: 0;
+  }
+
+  .register-brand img {
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .register-page > .register-card {
+    width: 100%;
+    max-width: 400px;
+    min-height: auto;
+    margin: 0 7px 7px 0;
+    padding: 30px 28px 24px;
+  }
+
+  .register-card h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .register-form {
+    gap: 12px;
+  }
+
+  .register-name-cnpj {
+    gap: 8px;
+  }
+
+  .register-field {
+    height: 36px;
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  .register-field input {
+    font-size: 12px;
+  }
+
+  .register-field svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .register-button {
+    min-height: 32px;
+    margin-top: 13px;
+    font-size: 12px;
+  }
+
+  .register-back {
+    margin-top: 12px;
+    font-size: 11px;
+  }
+}
