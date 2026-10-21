@@ -1,7 +1,7 @@
-
-import React from "react";
+import React, { useState } from "react";
 import "./CriarConta.css";
 import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 function FieldIcon({ type }) {
   const common = {
@@ -64,11 +64,19 @@ function RegisterField({ icon, ...props }) {
 }
 
 function CriarConta() {
+  const [modalConfirmacaoAberta, setModalConfirmacaoAberta] =
+    useState(false);
+
+  const [codigo, setCodigo] = useState(["", "", "", ""]);
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+
   function handleSubmit(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
     const data = new FormData(form);
+
     const senha = data.get("senha");
     const confirmarSenha = data.get("confirmarSenha");
 
@@ -77,7 +85,9 @@ function CriarConta() {
       return;
     }
 
-    alert("Visual da tela pronto! A integração do cadastro será feita depois.");
+    setEmail(data.get("email"));
+    setCodigo(["", "", "", ""]);
+    setModalConfirmacaoAberta(true);
   }
 
   return (
@@ -89,7 +99,10 @@ function CriarConta() {
       <section className="register-card">
         <h1>Criar Conta</h1>
 
-        <form onSubmit={handleSubmit} className="register-form">
+        <form
+          onSubmit={handleSubmit}
+          className="register-form"
+        >
           <div className="register-name-cnpj">
             <RegisterField
               icon="user"
@@ -141,9 +154,7 @@ function CriarConta() {
             required
           />
 
-          <button type="submit" className="register-button">
-            Criar
-          </button>
+          <button type="submit">Criar</button>
         </form>
 
         <button
@@ -154,6 +165,85 @@ function CriarConta() {
           Já tenho conta!
         </button>
       </section>
+
+      {modalConfirmacaoAberta && (
+        <div
+          className="modal-overlay"
+          onClick={() => setModalConfirmacaoAberta(false)}
+        >
+          <section
+            className="recovery-modal confirmation-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirmation-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <p
+              className="confirmation-message"
+              id="confirmation-title"
+            >
+              Por favor, digite o código
+              <br />
+              que enviamos agora para:
+            </p>
+
+            <strong className="confirmation-email">
+              {email}
+            </strong>
+            
+                <form
+                  className="confirmation-form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+
+                    setModalConfirmacaoAberta(false);
+
+                    alert("Conta criada e confirmada com sucesso!");
+
+                    navigate("/");
+                  }}
+                >
+
+              <div className="confirmation-code">
+                {codigo.map((digito, index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={1}
+                    aria-label={`Dígito ${index + 1} do código`}
+                    value={digito}
+                    onChange={(event) => {
+                      const valor = event.target.value.replace(
+                        /\D/g,
+                        ""
+                      );
+
+                      setCodigo((anterior) =>
+                        anterior.map((item, i) =>
+                          i === index ? valor.slice(-1) : item
+                        )
+                      );
+                    }}
+                    required
+                  />
+                ))}
+              </div>
+
+              <button type="submit">Verificar</button>
+            </form>
+
+            <button
+              type="button"
+              className="resend-code"
+              onClick={() => setCodigo(["", "", "", ""])}
+            >
+              Reenviar código
+            </button>
+          </section>
+        </div>
+      )}
     </main>
   );
 }

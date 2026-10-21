@@ -1,4 +1,4 @@
-```css
+
 * {
   box-sizing: border-box;
 }
@@ -391,5 +391,416 @@ body {
 
   .login-options {
     flex-wrap: wrap;
+  }
+}
+
+
+/* Fundo atrás da modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: rgb(0 0 0 / 25%);
+}
+
+/* Modal ampliada */
+.recovery-modal {
+  position: relative;
+  width: 480px;
+  height: 335px;
+  max-width: 100%;
+  flex-shrink: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #0861f5;
+  border-radius: 22px;
+  box-shadow: 7px 7px 0 #ff808b;
+  color: #000;
+  text-align: left;
+}
+
+/* Título */
+.recovery-modal h2 {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 38px;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+/* Subtítulo */
+.recovery-modal p {
+  position: absolute;
+  top: 53px;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: center;
+}
+
+/* Formulário */
+.recovery-modal form {
+  display: contents;
+}
+
+/* Campo de e-mail */
+.recovery-modal input {
+  position: absolute;
+  top: 133px;
+  left: 13%;
+  width: 77%;
+  height: 36px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 22px;
+  outline: none;
+  background: #fff;
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: normal;
+  box-shadow: 0 3px 5px rgb(0 0 0 / 30%);
+}
+
+.recovery-modal input::placeholder {
+  color: #c0c0c0;
+  opacity: 1;
+}
+
+/* Botão Enviar */
+.recovery-modal button {
+  position: absolute;
+  top: 233px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 195px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 22px;
+  background: #ff7584;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 34px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 3px 4px rgb(0 0 0 / 20%);
+}
+
+.recovery-modal button:hover {
+  filter: brightness(1.05);
+}
+
+@media (max-width: 520px) {
+  .recovery-modal {
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+  }
+
+  .recovery-modal h2 {
+    top: 15px;
+    font-size: 25px;
+  }
+
+  .recovery-modal p {
+    top: 49px;
+    font-size: 15px;
+  }
+
+  .recovery-modal input {
+    top: 115px;
+  }
+
+  .recovery-modal button {
+    top: 205px;
+    width: 160px;
+  }
+}
+
+
+/* Modal de confirmação ampliada */
+.confirmation-modal {
+  width: 480px;
+  height: 335px;
+  max-width: 100%;
+  border-radius: 22px;
+  box-shadow: 7px 7px 0 #ff808b;
+}
+
+/* Texto de instrução */
+.confirmation-modal .confirmation-message {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: center;
+}
+
+/* E-mail */
+.confirmation-modal .confirmation-email {
+  position: absolute;
+  top: 84px;
+  left: 5%;
+  width: 90%;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* Quatro campos do código */
+.confirmation-modal .confirmation-code {
+  position: absolute;
+  top: 125px;
+  left: 50%;
+  display: flex;
+  gap: 14px;
+  transform: translateX(-50%);
+}
+
+.confirmation-modal .confirmation-code input {
+  position: static;
+  box-sizing: border-box;
+  width: 60px;
+  height: 70px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+  background: #4388f5;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 28px;
+  text-align: center;
+  box-shadow: 0 4px 0 #b54b9b;
+}
+
+/* Botão Verificar */
+.confirmation-modal .confirmation-form button {
+  position: absolute;
+  top: 225px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 195px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 22px;
+  background: #ff7584;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  line-height: 34px;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Reenviar código */
+.confirmation-modal .resend-code {
+  position: absolute;
+  top: 274px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #000;
+  box-shadow: none;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  line-height: 24px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.confirmation-modal .resend-code:hover {
+  text-decoration: underline;
+  filter: none;
+}
+
+/* Ajuste para celulares */
+@media (max-width: 520px) {
+  .confirmation-modal {
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+  }
+
+  .confirmation-modal .confirmation-message {
+    top: 15px;
+    font-size: 15px;
+    line-height: 20px;
+  }
+
+  .confirmation-modal .confirmation-email {
+    top: 68px;
+    font-size: 15px;
+  }
+
+  .confirmation-modal .confirmation-code {
+    top: 105px;
+    gap: 10px;
+  }
+
+  .confirmation-modal .confirmation-code input {
+    width: 48px;
+    height: 58px;
+  }
+
+  .confirmation-modal .confirmation-form button {
+    top: 195px;
+    width: 160px;
+  }
+
+  .confirmation-modal .resend-code {
+    top: 245px;
+    font-size: 15px;
+  }
+}
+
+
+/* Modal de criar nova senha — tamanho padronizado */
+.new-password-modal {
+  width: 480px;
+  height: 335px;
+  max-width: 100%;
+  padding: 0;
+  border-radius: 22px;
+  box-shadow: 7px 7px 0 #ff808b;
+}
+
+/* Título */
+.new-password-modal h2 {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 38px;
+  letter-spacing: 0;
+  text-align: center;
+  white-space: normal;
+}
+
+/* Formulário */
+.new-password-modal form {
+  display: contents;
+}
+
+/* Campos de senha */
+.new-password-modal input {
+  position: absolute;
+  left: 13%;
+  width: 77%;
+  height: 36px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 22px;
+  outline: none;
+  background: #fff;
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  box-shadow: 0 3px 5px rgb(0 0 0 / 30%);
+}
+
+.new-password-modal input:nth-of-type(1) {
+  top: 110px;
+}
+
+.new-password-modal input:nth-of-type(2) {
+  top: 180px;
+}
+
+.new-password-modal input::placeholder {
+  color: #c0c0c0;
+  opacity: 1;
+}
+
+/* Botão Alterar senha */
+.new-password-modal form button {
+  position: absolute;
+  top: 255px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 195px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 22px;
+  background: #ff7584;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  line-height: 34px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 3px 4px rgb(0 0 0 / 20%);
+}
+
+.new-password-modal form button:hover {
+  filter: brightness(1.05);
+}
+
+/* Ajuste para celulares */
+@media (max-width: 520px) {
+  .new-password-modal {
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+  }
+
+  .new-password-modal h2 {
+    top: 15px;
+    font-size: 25px;
+    line-height: 32px;
+  }
+
+  .new-password-modal input:nth-of-type(1) {
+    top: 95px;
+  }
+
+  .new-password-modal input:nth-of-type(2) {
+    top: 155px;
+  }
+
+  .new-password-modal form button {
+    top: 225px;
+    width: 160px;
   }
 }

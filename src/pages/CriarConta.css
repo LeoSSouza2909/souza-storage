@@ -276,3 +276,186 @@ body {
     font-size: 11px;
   }
 }
+
+/* Modal de confirmação ampliada */
+.confirmation-modal {
+  width: 480px;
+  height: 335px;
+  max-width: 100%;
+  border-radius: 22px;
+  box-shadow: 7px 7px 0 #ff808b;
+}
+
+/* Texto de instrução */
+.confirmation-modal .confirmation-message {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: center;
+}
+
+/* E-mail */
+.confirmation-modal .confirmation-email {
+  position: absolute;
+  top: 84px;
+  left: 5%;
+  width: 90%;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* Quatro campos do código */
+.confirmation-modal .confirmation-code {
+  position: absolute;
+  top: 125px;
+  left: 50%;
+  display: flex;
+  gap: 14px;
+  transform: translateX(-50%);
+}
+
+.confirmation-modal .confirmation-code input {
+  position: static;
+  box-sizing: border-box;
+  width: 60px;
+  height: 70px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+  background: #4388f5;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 28px;
+  text-align: center;
+  box-shadow: 0 4px 0 #b54b9b;
+}
+
+/* Botão Verificar */
+.confirmation-modal .confirmation-form button {
+  position: absolute;
+  top: 225px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 195px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 22px;
+  background: #ff7584;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  line-height: 34px;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Reenviar código */
+.confirmation-modal .resend-code {
+  position: absolute;
+  top: 274px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #000;
+  box-shadow: none;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  line-height: 24px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.confirmation-modal .resend-code:hover {
+  text-decoration: underline;
+  filter: none;
+}
+
+/* Ajuste para celulares */
+@media (max-width: 520px) {
+  .confirmation-modal {
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+  }
+
+  .confirmation-modal .confirmation-message {
+    top: 15px;
+    font-size: 15px;
+    line-height: 20px;
+  }
+
+  .confirmation-modal .confirmation-email {
+    top: 68px;
+    font-size: 15px;
+  }
+
+  .confirmation-modal .confirmation-code {
+    top: 105px;
+    gap: 10px;
+  }
+
+  .confirmation-modal .confirmation-code input {
+    width: 48px;
+    height: 58px;
+  }
+
+  .confirmation-modal .confirmation-form button {
+    top: 195px;
+    width: 160px;
+  }
+
+  .confirmation-modal .resend-code {
+    top: 245px;
+    font-size: 15px;
+  }
+}
+
+
+/* Botão Criar conta */
+.register-form > button[type="submit"] {
+  display: block;
+  width: 92%;
+  min-height: 42px;
+  margin: 18px auto 0;
+  padding: 0 16px;
+
+  border: none;
+  border-radius: 25px;
+
+  background: #ff7584;
+  color: #000;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+
+  cursor: pointer;
+  box-shadow: 0 3px 5px rgb(0 0 0 / 18%);
+  transition: filter 0.2s, transform 0.2s;
+}
+
+.register-form > button[type="submit"]:hover {
+  filter: brightness(1.05);
+}
+
+.register-form > button[type="submit"]:active {
+  transform: scale(0.98);
+}
