@@ -17,13 +17,14 @@ export default function Login() {
   const [novaSenha, setNovaSenha] = useState("");
   const [confirmarNovaSenha, setConfirmarNovaSenha] = useState("");
 
+  
   function handleLogin(event) {
     event.preventDefault();
 
-    // Aqui você poderá integrar a API de autenticação depois.
-    console.log("Usuário:", usuario);
-    console.log("Senha:", senha);
+    // Redireciona para a tela de Reposição.
+    navigate("/reposicao");
   }
+
 
   return (
     <main className="login-page">

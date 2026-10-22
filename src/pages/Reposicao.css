@@ -1,0 +1,522 @@
+
+/* ==============================
+   CONFIGURAÇÕES GERAIS
+============================== */
+
+* {
+  box-sizing: border-box;
+}
+
+.reposicao-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #b3b3b7;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ==============================
+   CABEÇALHO AZUL
+============================== */
+
+.reposicao-header {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 58px;
+  margin: 0 10px 0 11px;
+  padding: 0 12px;
+  border: 1px solid #9d9da1;
+  border-top: none;
+  border-radius: 0 0 19px 19px;
+  background: #0865f9;
+  box-shadow: 0 2px 3px rgb(0 0 0 / 28%);
+}
+
+.reposicao-header h1 {
+  position: absolute;
+  left: 50%;
+  margin: 0;
+  transform: translateX(-50%);
+  font-size: 21px;
+  font-weight: 400;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 25%);
+}
+
+.reposicao-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 38px;
+  padding: 2px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.reposicao-icon-button svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.notification-button svg {
+  width: 27px;
+  height: 27px;
+  stroke-width: 1.5;
+}
+
+/* ==============================
+   MENU LATERAL
+============================== */
+
+.reposicao-menu {
+  position: absolute;
+  z-index: 10;
+  top: 55px;
+  left: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 72px;
+  padding: 5px;
+  overflow: hidden;
+  border: 1px solid #064ab4;
+  border-radius: 14px;
+  background: #0754c9;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 30%);
+}
+
+.reposicao-menu button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+  min-height: 44px;
+  padding: 4px 1px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #eaf2ff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.reposicao-menu button:hover {
+  background: rgb(255 255 255 / 14%);
+}
+
+.reposicao-menu svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.reposicao-menu span {
+  text-align: center;
+  line-height: 1.15;
+}
+
+/* ==============================
+   NOTIFICAÇÕES
+============================== */
+
+.reposicao-notifications {
+  position: absolute;
+  z-index: 10;
+  top: 55px;
+  right: 12px;
+  width: min(220px, calc(100% - 24px));
+  padding: 12px;
+  border: 1px solid #aaa;
+  border-radius: 9px;
+  background: #fff;
+  color: #333;
+  font-size: 13px;
+  box-shadow: 0 3px 7px rgb(0 0 0 / 25%);
+}
+
+/* ==============================
+   BARRA DE PESQUISA
+============================== */
+
+.reposicao-toolbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 39px;
+  padding: 0 3px;
+}
+
+.reposicao-search {
+  position: absolute;
+  left: 88%;
+  display: flex;
+  align-items: center;
+  width: 250px;
+  max-width: 60%;
+  height: 28px;
+  transform: translateX(-50%);
+  overflow: hidden;
+  border: 2px solid #97979b;
+  border-radius: 18px;
+  background: #d0d0d3;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+}
+
+.reposicao-search input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0 4px 0 10px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #333;
+  font-size: 13px;
+  text-align: center;
+}
+
+.reposicao-search input::placeholder {
+  color: #a4a4a8;
+  opacity: 1;
+}
+
+.reposicao-search svg {
+  flex: 0 0 19px;
+  width: 19px;
+  height: 19px;
+  margin-right: 3px;
+  fill: none;
+  stroke: #111;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.reposicao-send-button {
+  position: absolute;
+  right: 15px;
+  width: 70px;
+  height: 23px;
+  padding: 0;
+  border: 1px solid #9c9c9c;
+  border-radius: 15px;
+  background: #48d51e;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+}
+
+.reposicao-send-button:hover {
+  filter: brightness(1.05);
+}
+
+/* ==============================
+   ÁREA DOS CARTÕES
+============================== */
+
+.reposicao-content {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 8px 12px 16px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #89898e transparent;
+}
+
+.reposicao-watermark {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(66vw, 430px);
+  height: 55vh;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.reposicao-watermark img {
+  width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  opacity: 0.48;
+}
+
+/* ==============================
+   GRADE RESPONSIVA
+============================== */
+
+.reposicao-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: stretch;
+  justify-items: stretch;
+  gap: 35px;
+  width: 100%;
+}
+
+/* ==============================
+   CARTÕES DAS PEÇAS
+============================== */
+
+.reposicao-piece {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  width: 100%;
+  height: 300px;
+  min-width: 0;
+  padding: 8px;
+
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid #99999d;
+  border-radius: 18px;
+  background: #c9c9cd;
+  box-shadow: 0 2px 2px rgb(0 0 0 / 35%);
+
+  color: #333;
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.reposicao-piece:hover {
+  background: #d2d2d5;
+}
+
+.reposicao-piece:active {
+  transform: scale(0.98);
+}
+
+.reposicao-piece:focus-visible {
+  outline: 2px solid #0865f9;
+  outline-offset: 2px;
+}
+
+.reposicao-piece-image {
+  display: block;
+  width: 100%;
+  max-height: 75px;
+  object-fit: contain;
+}
+
+.reposicao-piece-name {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==============================
+   ESTADO VAZIO
+============================== */
+
+.reposicao-empty {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  padding: 20px;
+  color: #555;
+  text-align: center;
+  font-size: 14px;
+}
+
+.reposicao-empty p {
+  margin: 0;
+}
+
+/* ==============================
+   TABLETS E TELAS MÉDIAS
+============================== */
+
+@media (min-width: 601px) and (max-width: 1100px) {
+  .reposicao-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .reposicao-piece {
+    height: 260px;
+    border-radius: 16px;
+  }
+
+  .reposicao-content {
+    padding: 8px 12px 16px;
+  }
+
+  .reposicao-search {
+    left: 50%;
+    width: min(250px, 40%);
+    max-width: 40%;
+  }
+
+  .reposicao-watermark {
+    width: min(65vw, 380px);
+  }
+}
+
+/* ==============================
+   CELULARES
+============================== */
+
+@media (max-width: 600px) {
+  .reposicao-header {
+    flex-basis: 51px;
+    margin-right: 5px;
+    margin-left: 5px;
+    padding: 0 7px;
+  }
+
+  .reposicao-header h1 {
+    font-size: 19px;
+  }
+
+  .reposicao-toolbar {
+    flex-basis: 39px;
+  }
+
+  .reposicao-search {
+    left: 43%;
+    width: min(55%, 250px);
+    max-width: 55%;
+    height: 27px;
+  }
+
+  .reposicao-send-button {
+    right: 4px;
+    width: 61px;
+  }
+
+  .reposicao-content {
+    padding: 8px 10px 16px;
+  }
+
+  .reposicao-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .reposicao-piece {
+    width: 100%;
+    height: 240px;
+    padding: 8px 6px;
+    gap: 14px;
+    border-radius: 15px;
+  }
+
+  .reposicao-piece-image {
+    max-height: 90px;
+  }
+
+  .reposicao-piece-name {
+    font-size: 12px;
+  }
+
+  .reposicao-watermark {
+    width: 90vw;
+    height: 50vh;
+  }
+
+  .reposicao-menu {
+    left: 5px;
+  }
+
+  .reposicao-notifications {
+    right: 8px;
+  }
+}
+
+/* ==============================
+   CELULARES MUITO ESTREITOS
+============================== */
+
+@media (max-width: 360px) {
+  .reposicao-grid {
+    gap: 9px;
+  }
+
+  .reposicao-content {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .reposicao-piece {
+    height: 215px;
+    padding: 6px 4px;
+    gap: 10px;
+  }
+
+  .reposicao-piece-name {
+    font-size: 11px;
+  }
+}
+
+/* ==============================
+   ANIMAÇÃO DOS TRÊS TRACINHOS
+============================== */
+
+.menu-button svg {
+  overflow: visible;
+}
+
+.menu-button .menu-line {
+  transform-box: view-box;
+  transform-origin: center;
+  transition:
+    transform 0.35s ease,
+    opacity 0.25s ease;
+}
+
+.menu-button.menu-ativo .menu-line-1 {
+  transform: translateX(9px) rotate(90deg);
+}
+
+.menu-button.menu-ativo .menu-line-2 {
+  transform: rotate(90deg);
+}
+
+.menu-button.menu-ativo .menu-line-3 {
+  transform: translateX(-9px) rotate(90deg);
+}
