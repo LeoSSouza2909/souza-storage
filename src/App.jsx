@@ -1,9 +1,9 @@
-
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import CriarConta from "./pages/CriarConta";
 import Reposicao from "./pages/Reposicao";
+import Editar from "./pages/Editar";
 
 function App() {
   return (
@@ -12,6 +12,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/criar-conta" element={<CriarConta />} />
         <Route path="/reposicao" element={<Reposicao />} />
+        <Route path="/editar" element={<Editar />} />
       </Routes>
     </BrowserRouter>
   );

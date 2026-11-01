@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
 }
@@ -231,7 +230,9 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 15px;
   cursor: pointer;
-  transition: filter 0.2s, transform 0.2s;
+  transition:
+    filter 0.2s,
+    transform 0.2s;
 }
 
 .login-button:hover {
@@ -394,7 +395,6 @@ body {
   }
 }
 
-
 /* Fundo atrás da modal */
 .modal-overlay {
   position: fixed;
@@ -535,7 +535,6 @@ body {
     width: 160px;
   }
 }
-
 
 /* Modal de confirmação ampliada */
 .confirmation-modal {
@@ -688,7 +687,6 @@ body {
   }
 }
 
-
 /* Modal de criar nova senha — tamanho padronizado */
 .new-password-modal {
   width: 480px;
@@ -802,5 +800,89 @@ body {
   .new-password-modal form button {
     top: 225px;
     width: 160px;
+  }
+}
+
+/* =========================================
+   MODO ESCURO AUTOMÁTICO
+   ========================================= */
+
+@media (prefers-color-scheme: dark) {
+  /* Fundo da página */
+  body {
+    background: #1b1b20;
+  }
+
+  .login-page {
+    background: #1b1b20;
+  }
+
+  /* Cartão de login: mantém o azul original */
+  .login-card {
+    background: #0861f5;
+  }
+
+  /* Campos de login */
+  .login-input {
+    background: #292930;
+  }
+
+  .login-input svg {
+    stroke: #f1f1f1;
+  }
+
+  .login-input input {
+    color: #f1f1f1;
+  }
+
+  .login-input input::placeholder {
+    color: #aaa;
+  }
+
+  /* Opções de login */
+  .remember-option,
+  .forgot-password,
+  .create-account {
+    color: #000;
+  }
+
+  /* Modais: mantêm o azul original */
+  .recovery-modal,
+  .confirmation-modal,
+  .new-password-modal {
+    background: #0861f5;
+    color: #000;
+  }
+
+  /* Campos dos modais */
+  .recovery-modal input,
+  .new-password-modal input {
+    background: #292930;
+    color: #f1f1f1;
+  }
+
+  .recovery-modal input::placeholder,
+  .new-password-modal input::placeholder {
+    color: #aaa;
+  }
+
+  /* Campos do código de confirmação */
+  .confirmation-modal .confirmation-code input {
+    background: #292930;
+    color: #fff;
+  }
+
+  /* Mantém os botões rosa originais */
+  .login-button,
+  .recovery-modal button,
+  .confirmation-modal .confirmation-form button,
+  .new-password-modal form button {
+    background: #ff7584;
+    color: #000;
+  }
+
+  /* Fundo atrás das modais */
+  .modal-overlay {
+    background: rgb(0 0 0 / 65%);
   }
 }

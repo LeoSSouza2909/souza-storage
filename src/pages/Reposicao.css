@@ -1,179 +1,25 @@
-
-/* ==============================
-   CONFIGURAÇÕES GERAIS
-============================== */
-
-* {
-  box-sizing: border-box;
-}
-
-.reposicao-page {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
-  background: #b3b3b7;
-  color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-/* ==============================
-   CABEÇALHO AZUL
-============================== */
-
-.reposicao-header {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex: 0 0 58px;
-  margin: 0 10px 0 11px;
-  padding: 0 12px;
-  border: 1px solid #9d9da1;
-  border-top: none;
-  border-radius: 0 0 19px 19px;
-  background: #0865f9;
-  box-shadow: 0 2px 3px rgb(0 0 0 / 28%);
-}
-
-.reposicao-header h1 {
-  position: absolute;
-  left: 50%;
-  margin: 0;
-  transform: translateX(-50%);
-  font-size: 21px;
-  font-weight: 400;
-  white-space: nowrap;
-  text-shadow: 0 1px 2px rgb(0 0 0 / 25%);
-}
-
-.reposicao-icon-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 38px;
-  padding: 2px;
-  border: none;
-  background: transparent;
-  color: #fff;
-  cursor: pointer;
-}
-
-.reposicao-icon-button svg {
-  width: 30px;
-  height: 30px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.notification-button svg {
-  width: 27px;
-  height: 27px;
-  stroke-width: 1.5;
-}
-
-/* ==============================
-   MENU LATERAL
-============================== */
-
-.reposicao-menu {
-  position: absolute;
-  z-index: 10;
-  top: 55px;
-  left: 9px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  width: 72px;
-  padding: 5px;
-  overflow: hidden;
-  border: 1px solid #064ab4;
-  border-radius: 14px;
-  background: #0754c9;
-  box-shadow: 0 3px 6px rgb(0 0 0 / 30%);
-}
-
-.reposicao-menu button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  width: 100%;
-  min-height: 44px;
-  padding: 4px 1px;
-  border: none;
-  border-radius: 5px;
-  background: transparent;
-  color: #eaf2ff;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.reposicao-menu button:hover {
-  background: rgb(255 255 255 / 14%);
-}
-
-.reposicao-menu svg {
-  width: 17px;
-  height: 17px;
-  flex-shrink: 0;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.reposicao-menu span {
-  text-align: center;
-  line-height: 1.15;
-}
-
-/* ==============================
-   NOTIFICAÇÕES
-============================== */
-
-.reposicao-notifications {
-  position: absolute;
-  z-index: 10;
-  top: 55px;
-  right: 12px;
-  width: min(220px, calc(100% - 24px));
-  padding: 12px;
-  border: 1px solid #aaa;
-  border-radius: 9px;
-  background: #fff;
-  color: #333;
-  font-size: 13px;
-  box-shadow: 0 3px 7px rgb(0 0 0 / 25%);
-}
-
 /* ==============================
    BARRA DE PESQUISA
 ============================== */
 
 .reposicao-toolbar {
-  position: relative;
-  z-index: 2;
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 39px;
-  padding: 0 3px;
+  width: 100%;
+  height: 39px;
+  padding: 0 15px;
+  pointer-events: none;
 }
 
 .reposicao-search {
   position: absolute;
-  left: 88%;
+  left: 50%;
+  pointer-events: auto;
   display: flex;
   align-items: center;
   width: 250px;
@@ -216,6 +62,10 @@
   stroke-linecap: round;
 }
 
+/* ==============================
+   BOTÃO ENVIAR
+============================== */
+
 .reposicao-send-button {
   position: absolute;
   right: 15px;
@@ -228,6 +78,7 @@
   color: #fff;
   font-size: 13px;
   cursor: pointer;
+  pointer-events: auto;
   box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
 }
 
@@ -241,35 +92,15 @@
 
 .reposicao-content {
   position: relative;
+  z-index: 1;
   flex: 1 1 auto;
   min-height: 0;
-  padding: 8px 12px 16px;
+  padding: 47px 12px 16px;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior-y: contain;
   scrollbar-width: thin;
   scrollbar-color: #89898e transparent;
-}
-
-.reposicao-watermark {
-  position: absolute;
-  z-index: 0;
-  top: 50%;
-  left: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: min(66vw, 430px);
-  height: 55vh;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.reposicao-watermark img {
-  width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  opacity: 0.48;
 }
 
 /* ==============================
@@ -297,22 +128,18 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
-
   width: 100%;
   height: 300px;
   min-width: 0;
   padding: 8px;
-
   box-sizing: border-box;
   overflow: hidden;
   border: 1px solid #99999d;
   border-radius: 18px;
   background: #c9c9cd;
   box-shadow: 0 2px 2px rgb(0 0 0 / 35%);
-
   color: #333;
   cursor: pointer;
-
   transition:
     background 0.15s ease,
     transform 0.15s ease;
@@ -368,7 +195,7 @@
 }
 
 /* ==============================
-   TABLETS E TELAS MÉDIAS
+   TABLETS
 ============================== */
 
 @media (min-width: 601px) and (max-width: 1100px) {
@@ -391,10 +218,6 @@
     width: min(250px, 40%);
     max-width: 40%;
   }
-
-  .reposicao-watermark {
-    width: min(65vw, 380px);
-  }
 }
 
 /* ==============================
@@ -402,17 +225,6 @@
 ============================== */
 
 @media (max-width: 600px) {
-  .reposicao-header {
-    flex-basis: 51px;
-    margin-right: 5px;
-    margin-left: 5px;
-    padding: 0 7px;
-  }
-
-  .reposicao-header h1 {
-    font-size: 19px;
-  }
-
   .reposicao-toolbar {
     flex-basis: 39px;
   }
@@ -430,7 +242,7 @@
   }
 
   .reposicao-content {
-    padding: 8px 10px 16px;
+    padding: 47px 10px 16px;
   }
 
   .reposicao-grid {
@@ -452,19 +264,6 @@
 
   .reposicao-piece-name {
     font-size: 12px;
-  }
-
-  .reposicao-watermark {
-    width: 90vw;
-    height: 50vh;
-  }
-
-  .reposicao-menu {
-    left: 5px;
-  }
-
-  .reposicao-notifications {
-    right: 8px;
   }
 }
 
@@ -494,29 +293,235 @@
 }
 
 /* ==============================
-   ANIMAÇÃO DOS TRÊS TRACINHOS
+   ESTILO DO EDITAR
 ============================== */
 
-.menu-button svg {
-  overflow: visible;
+.editar-add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 90px;
 }
 
-.menu-button .menu-line {
-  transform-box: view-box;
-  transform-origin: center;
-  transition:
-    transform 0.35s ease,
-    opacity 0.25s ease;
+.editar-add-icon {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
 }
 
-.menu-button.menu-ativo .menu-line-1 {
-  transform: translateX(9px) rotate(90deg);
+/* ==============================
+   FUNDO DA MODAL
+============================== */
+
+.editar-modal-overlay {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgb(0 0 0 / 35%);
 }
 
-.menu-button.menu-ativo .menu-line-2 {
-  transform: rotate(90deg);
+/* ==============================
+   MODAL DE CADASTRO / EDIÇÃO
+============================== */
+
+.editar-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(600px, 90%);
+  min-height: 190px;
+  padding: 22px 22px 14px;
+  border: none;
+  border-radius: 18px;
+  background: #c9c9cd;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 25%);
 }
 
-.menu-button.menu-ativo .menu-line-3 {
-  transform: translateX(-9px) rotate(90deg);
+.editar-modal-fechar {
+  position: absolute;
+  top: 5px;
+  right: 9px;
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #555;
+  font-size: 23px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.editar-modal-campos {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.editar-modal-campos input {
+  width: 50%;
+  min-width: 0;
+  height: 43px;
+  padding: 0 15px;
+  border: 1px solid #aaa;
+  border-radius: 22px;
+  outline: none;
+  background: #d0d0d3;
+  color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.editar-modal-campos input:focus {
+  border-color: #888;
+}
+
+.editar-modal-campos input::placeholder {
+  color: #aaa;
+}
+
+.editar-modal-rodape {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.editar-imagem-seletor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 85px;
+  height: 80px;
+  overflow: hidden;
+  border: 1px solid #aaa;
+  border-radius: 12px;
+  background: #d0d0d3;
+  color: #999;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.editar-imagem-mais {
+  font-size: 25px;
+  line-height: 1;
+}
+
+.editar-imagem-seletor img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.editar-salvar-button {
+  width: 75px;
+  height: 29px;
+  padding: 0;
+  border: none;
+  border-radius: 18px;
+  background: #48d51e;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
+}
+
+.editar-salvar-button:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 600px) {
+  .editar-modal {
+    width: 92%;
+    min-height: 200px;
+    padding: 23px 15px 15px;
+  }
+
+  .editar-modal-campos input {
+    height: 38px;
+    font-size: 12px;
+  }
+
+  .editar-imagem-seletor {
+    width: 75px;
+    height: 70px;
+  }
+}
+
+/* ==============================
+   MODO ESCURO AUTOMÁTICO
+============================== */
+
+@media (prefers-color-scheme: dark) {
+  .reposicao-search {
+    border-color: #55555d;
+    background: #303038;
+  }
+
+  .reposicao-search input {
+    color: #f1f1f1;
+  }
+
+  .reposicao-search input::placeholder {
+    color: #92929b;
+  }
+
+  .reposicao-search svg {
+    stroke: #f1f1f1;
+  }
+
+  .reposicao-piece {
+    border-color: #484850;
+    background: #292930;
+    color: #f1f1f1;
+  }
+
+  .reposicao-piece:hover {
+    background: #363640;
+  }
+
+  .reposicao-empty {
+    color: #d0d0d5;
+  }
+
+  .reposicao-content {
+    scrollbar-color: #55555d transparent;
+  }
+
+  .editar-modal {
+    background: #292930;
+    color: #f1f1f1;
+  }
+
+  .editar-modal-fechar {
+    color: #ddd;
+  }
+
+  .editar-modal-campos input {
+    border-color: #55555d;
+    background: #303038;
+    color: #f1f1f1;
+  }
+
+  .editar-modal-campos input:focus {
+    border-color: #888;
+  }
+
+  .editar-modal-campos input::placeholder {
+    color: #92929b;
+  }
+
+  .editar-imagem-seletor {
+    border-color: #55555d;
+    background: #303038;
+    color: #aaa;
+  }
 }

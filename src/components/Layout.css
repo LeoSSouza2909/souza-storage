@@ -1,0 +1,246 @@
+* {
+  box-sizing: border-box;
+}
+
+.layout-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--background, #b3b3b7);
+  color: var(--text, #fff);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.layout-header {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 58px;
+  margin: 0 10px 0 11px;
+  padding: 0 12px;
+  border: 1px solid #9d9da1;
+  border-top: none;
+  border-radius: 0 0 19px 19px;
+  background: #0865f9;
+  box-shadow: 0 2px 3px rgb(0 0 0 / 28%);
+}
+
+.layout-header h1 {
+  position: absolute;
+  left: 50%;
+  margin: 0;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 21px;
+  font-weight: 400;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 25%);
+}
+
+.layout-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 38px;
+  padding: 2px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.layout-icon-button svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.notification-button svg {
+  width: 27px;
+  height: 27px;
+  stroke-width: 1.5;
+}
+
+.layout-menu {
+  position: absolute;
+  z-index: 10;
+  top: 55px;
+  left: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 72px;
+  padding: 5px;
+  overflow: hidden;
+  border: 1px solid #064ab4;
+  border-radius: 14px;
+  background: #0754c9;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 30%);
+}
+
+.layout-menu button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+  min-height: 58px;
+  padding: 4px 1px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #eaf2ff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.layout-menu button:hover {
+  background: rgb(255 255 255 / 14%);
+}
+
+.layout-menu svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.layout-menu span {
+  text-align: center;
+  line-height: 1.15;
+}
+
+.layout-notifications {
+  position: absolute;
+  z-index: 10;
+  top: 55px;
+  right: 12px;
+  width: min(220px, calc(100% - 24px));
+  padding: 12px;
+  border: 1px solid var(--border, #aaa);
+  border-radius: 9px;
+  background: var(--surface, #fff);
+  color: var(--text, #333);
+  font-size: 13px;
+  box-shadow: 0 3px 7px rgb(0 0 0 / 25%);
+}
+
+.layout-content {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.layout-watermark {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(66vw, 430px);
+  height: 55vh;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.layout-watermark img {
+  width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  opacity: 0.48;
+}
+
+.layout-page-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.menu-button svg {
+  overflow: visible;
+}
+
+.menu-button .menu-line {
+  transform-box: view-box;
+  transform-origin: center;
+  transition:
+    transform 0.35s ease,
+    opacity 0.25s ease;
+}
+
+.menu-button.menu-ativo .menu-line-1 {
+  transform: translateX(9px) rotate(90deg);
+}
+
+.menu-button.menu-ativo .menu-line-2 {
+  transform: rotate(90deg);
+}
+
+.menu-button.menu-ativo .menu-line-3 {
+  transform: translateX(-9px) rotate(90deg);
+}
+
+/* Modo escuro automático */
+@media (prefers-color-scheme: dark) {
+  .layout-page {
+    background: var(--background, #1b1b20);
+    color: var(--text, #f1f1f1);
+  }
+
+  .layout-notifications {
+    border-color: var(--border, #444);
+    background: var(--surface, #29292f);
+    color: var(--text, #f1f1f1);
+  }
+}
+
+@media (max-width: 600px) {
+  .layout-header {
+    flex-basis: 51px;
+    margin-right: 5px;
+    margin-left: 5px;
+    padding: 0 7px;
+  }
+
+  .layout-header h1 {
+    font-size: 19px;
+  }
+
+  .layout-watermark {
+    width: 90vw;
+    height: 50vh;
+  }
+
+  .layout-menu {
+    left: 5px;
+  }
+
+  .layout-notifications {
+    right: 8px;
+  }
+}

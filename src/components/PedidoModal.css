@@ -1,0 +1,331 @@
+/* ==============================
+   FUNDO DA MODAL
+============================== */
+
+.pedido-modal-overlay {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgb(0 0 0 / 35%);
+}
+
+/* ==============================
+   MODAL PRINCIPAL
+============================== */
+
+.pedido-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 92vw);
+  height: min(650px, 85vh);
+  padding: 5px;
+  overflow: hidden;
+  border: none;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 25%);
+}
+
+/* ==============================
+   CABEÇALHO AZUL
+============================== */
+
+.pedido-modal-header h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* CONJUNTO DO CABEÇALHO E BOTÃO */
+
+.pedido-modal-topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  flex: 0 0 42px;
+  margin-bottom: 12px;
+}
+
+/* FAIXA AZUL */
+
+.pedido-modal-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 42px;
+  min-width: 0;
+  border-radius: 12px;
+  background: #0865f9;
+}
+
+.pedido-modal-header h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 400;
+}
+
+/* BOTÃO VERDE SEPARADO */
+
+.pedido-download-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  padding: 7px;
+  border: none;
+  border-radius: 10px;
+  background: #48d51e;
+  color: #fff;
+  cursor: pointer;
+}
+
+.pedido-download-button svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ==============================
+   BARRA DE PESQUISA
+============================== */
+
+.pedido-modal-search {
+  display: flex;
+  align-items: center;
+  flex: 0 0 30px;
+  width: min(350px, 65%);
+  margin: 0 auto 14px;
+  padding: 0 10px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #d0d0d3;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
+}
+
+.pedido-modal-search input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #333;
+  font-size: 12px;
+  text-align: center;
+}
+
+.pedido-modal-search input::placeholder {
+  color: #aaa;
+}
+
+.pedido-modal-search svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: #222;
+  stroke-width: 2;
+}
+
+/* ==============================
+   LISTA DE PEÇAS
+============================== */
+
+.pedido-modal-lista {
+  flex: 1;
+  min-height: 0;
+  padding: 0 2px 3px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #aaa transparent;
+}
+
+.pedido-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+/* ==============================
+   CARTÕES DAS PEÇAS
+============================== */
+
+.pedido-modal-peca {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  height: 145px;
+  padding: 8px;
+  overflow: hidden;
+  border-radius: 13px;
+  background: #c9c9cd;
+  color: #555;
+}
+
+.pedido-modal-peca img,
+.pedido-modal-imagem-vazia {
+  width: 65px;
+  height: 95px;
+  object-fit: contain;
+}
+
+.pedido-modal-imagem-vazia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 12px;
+}
+
+.pedido-modal-peca span {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==============================
+   LISTA VAZIA
+============================== */
+
+.pedido-modal-vazio {
+  padding: 25px 10px;
+  color: #777;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ==============================
+   TELAS MÉDIAS
+============================== */
+
+@media (max-width: 700px) {
+  .pedido-modal {
+    width: 94vw;
+    height: min(600px, 85vh);
+  }
+
+  .pedido-modal-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .pedido-modal-peca {
+    height: 125px;
+  }
+
+  .pedido-modal-peca img,
+  .pedido-modal-imagem-vazia {
+    width: 55px;
+    height: 78px;
+  }
+}
+
+/* ==============================
+   CELULARES
+============================== */
+
+@media (max-width: 420px) {
+  .pedido-modal {
+    width: 95vw;
+    height: 80vh;
+    padding: 4px;
+  }
+
+  .pedido-modal-header {
+    flex-basis: 36px;
+    margin-bottom: 10px;
+  }
+
+  .pedido-modal-header h2 {
+    font-size: 14px;
+  }
+
+  .pedido-download-button {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .pedido-modal-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .pedido-modal-peca {
+    height: 110px;
+  }
+
+  .pedido-modal-peca img,
+  .pedido-modal-imagem-vazia {
+    width: 45px;
+    height: 65px;
+  }
+}
+
+/* ==============================
+   MODO ESCURO AUTOMÁTICO
+============================== */
+
+@media (prefers-color-scheme: dark) {
+  .pedido-modal {
+    background: #202027;
+  }
+
+  .pedido-modal-search {
+    background: #303038;
+  }
+
+  .pedido-modal-search input {
+    color: #f1f1f1;
+  }
+
+  .pedido-modal-search input::placeholder {
+    color: #92929b;
+  }
+
+  .pedido-modal-search svg {
+    stroke: #f1f1f1;
+  }
+
+  .pedido-modal-lista {
+    scrollbar-color: #55555d transparent;
+  }
+
+  .pedido-modal-peca {
+    background: #303038;
+    color: #f1f1f1;
+  }
+
+  .pedido-modal-imagem-vazia {
+    color: #aaa;
+  }
+
+  .pedido-modal-vazio {
+    color: #c5c5cc;
+  }
+}

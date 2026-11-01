@@ -1,4 +1,3 @@
-
 /* Configuração geral */
 * {
   box-sizing: border-box;
@@ -174,7 +173,9 @@ body {
   font-size: 15px;
 
   cursor: pointer;
-  transition: filter 0.2s, transform 0.2s;
+  transition:
+    filter 0.2s,
+    transform 0.2s;
 }
 
 .register-button:hover {
@@ -428,7 +429,6 @@ body {
   }
 }
 
-
 /* Botão Criar conta */
 .register-form > button[type="submit"] {
   display: block;
@@ -449,7 +449,9 @@ body {
 
   cursor: pointer;
   box-shadow: 0 3px 5px rgb(0 0 0 / 18%);
-  transition: filter 0.2s, transform 0.2s;
+  transition:
+    filter 0.2s,
+    transform 0.2s;
 }
 
 .register-form > button[type="submit"]:hover {
@@ -458,4 +460,73 @@ body {
 
 .register-form > button[type="submit"]:active {
   transform: scale(0.98);
+}
+
+/* =========================================
+   MODO ESCURO AUTOMÁTICO
+   ========================================= */
+
+@media (prefers-color-scheme: dark) {
+  /* Fundo da página */
+  body {
+    background: #1b1b20;
+  }
+
+  .register-page {
+    background: #1b1b20;
+  }
+
+  /* Cartão de cadastro: mantém o azul original */
+  .register-page > .register-card {
+    background: #0861f5;
+  }
+
+  /* Campos */
+  .register-field {
+    background: #292930;
+  }
+
+  .register-field svg {
+    color: #f1f1f1;
+  }
+
+  .register-field input {
+    color: #f1f1f1;
+  }
+
+  .register-field input::placeholder {
+    color: #aaa;
+  }
+
+  /* Textos e botões permanecem com as cores originais */
+  .register-card h1,
+  .register-back {
+    color: #000;
+  }
+
+  .register-button,
+  .register-form > button[type="submit"] {
+    background: #ff7584;
+    color: #000;
+  }
+
+  /* Modal de confirmação */
+  .confirmation-modal {
+    background: #0861f5;
+    color: #000;
+  }
+
+  .confirmation-modal .confirmation-code input {
+    background: #292930;
+    color: #fff;
+  }
+
+  .confirmation-modal .confirmation-form button {
+    background: #ff7584;
+    color: #000;
+  }
+
+  .confirmation-modal .resend-code {
+    color: #000;
+  }
 }

@@ -1,35 +1,94 @@
+/* ==============================
+   VARIÁVEIS GLOBAIS
+============================== */
+
 :root {
-  --text: #6b6375;
+  color-scheme: light;
+
+  /* Cores principais */
+  --background: #b3b3b7;
+  --surface: #c9c9cd;
+  --surface-secondary: #d0d0d3;
+
+  --text: #333333;
+  --text-secondary: #777777;
   --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
+
+  --border: #99999d;
+
+  /* Cores da identidade visual */
   --accent: #aa3bff;
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
+
+  --header: #0865f9;
+  --card: #c9c9cd;
+
+  /* Outras configurações */
+  --bg: #ffffff;
+  --code-bg: #f4f3ec;
   --social-bg: rgba(244, 243, 236, 0.5);
+
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+
   color: var(--text);
   background: var(--bg);
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+/* ==============================
+   MODO ESCURO AUTOMÁTICO
+============================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --background: #17171b;
+    --surface: #24242a;
+    --surface-secondary: #303038;
+
+    --text: #d1d1d8;
+    --text-secondary: #a0a0aa;
+    --text-h: #f3f4f6;
+
+    --border: #41414a;
+
+    --accent: #c084fc;
+    --accent-bg: rgba(192, 132, 252, 0.15);
+    --accent-border: rgba(192, 132, 252, 0.5);
+
+    --header: #0865f9;
+    --card: #292930;
+
+    --bg: #16171d;
+    --code-bg: #1f2028;
+    --social-bg: rgba(47, 48, 58, 0.5);
+
+    --shadow:
+      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  }
+
+  #social .button-icon {
+    filter: invert(1) brightness(2);
   }
 }
 
+/* ==============================
+   CONFIGURAÇÕES GERAIS
+============================== */
 
 html,
 body,
@@ -42,66 +101,32 @@ body,
 }
 
 html {
-  background: #ffffff;
+  background: var(--bg);
 }
 
 body {
   min-height: 100vh;
-  display: block;
-  background: #ffffff;
+  background: var(--bg);
 }
 
 #root {
-  min-height: 100vh;
-}
-#root {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.register-page {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-body {
-  margin: 0;
-}
-
-#root {
-  width: 1126px;
+  width: 100%;
   max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+
+  border: none;
+  outline: none;
+  box-shadow: none;
+
+  text-align: center;
 }
+
+/* ==============================
+   TÍTULOS
+============================== */
 
 h1,
 h2 {
@@ -114,23 +139,22 @@ h1 {
   font-size: 56px;
   letter-spacing: -1.68px;
   margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
 }
+
 p {
   margin: 0;
 }
+
+/* ==============================
+   CÓDIGO
+============================== */
 
 code,
 .counter {
@@ -145,4 +169,23 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+/* ==============================
+   RESPONSIVIDADE
+============================== */
+
+@media (max-width: 1024px) {
+  :root {
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
 }
