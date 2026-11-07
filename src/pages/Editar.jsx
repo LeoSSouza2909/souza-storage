@@ -9,7 +9,7 @@ export default function Editar() {
   const [pesquisa, setPesquisa] = useState("");
   const [modalAberta, setModalAberta] = useState(false);
   const [pecaEditando, setPecaEditando] = useState(null);
-
+  const [importando, setImportando] = useState(false);
   const [nome, setNome] = useState("");
   const [marca, setMarca] = useState("");
   const [imagem, setImagem] = useState("");
@@ -125,6 +125,46 @@ export default function Editar() {
 
     if (campoArquivo) {
       campoArquivo.value = "";
+    }
+  }
+
+  // IMPORTAR PRODUTOS POR CSV OU EXCEL
+  async function importarProdutos() {
+    if (!arquivoImportacao) {
+      setErroImportacao("Selecione um arquivo primeiro.");
+      return;
+    }
+
+    const dados = new FormData();
+
+    dados.append("arquivo", arquivoImportacao);
+
+    try {
+      setImportando(true);
+      setErroImportacao("");
+
+      const resposta = await requisicaoApi("/api/produtos/importar", {
+        method: "POST",
+        body: dados,
+      });
+
+      // Atualizar a lista de produtos
+      await carregarPecas();
+
+      // Fechar a modal
+      fecharModalImportacao();
+
+      // Informar o resultado
+      alert(
+        resposta.mensagem ||
+          `${resposta.total} produtos importados com sucesso!`,
+      );
+    } catch (erro) {
+      setErroImportacao(
+        erro.message || "Não foi possível importar os produtos.",
+      );
+    } finally {
+      setImportando(false);
     }
   }
 
@@ -457,8 +497,9 @@ export default function Editar() {
               </table>
 
               <p className="importacao-observacao">
-                A primeira linha deve conter os nomes das colunas:
-                <strong> produto </strong> e <strong> marca</strong>.
+                A primeira linha deve conter a coluna obrigatória:
+                <strong> produto</strong>. A coluna <strong>marca</strong> é
+                opcional.
               </p>
             </div>
 
@@ -529,10 +570,10 @@ export default function Editar() {
               <button
                 type="button"
                 className="importacao-confirmar"
-                disabled={!arquivoImportacao}
-                title="A importação será ativada na próxima etapa"
+                onClick={importarProdutos}
+                disabled={!arquivoImportacao || importando}
               >
-                Importar produtos
+                {importando ? "Importando..." : "Importar produtos"}
               </button>
             </div>
           </div>

@@ -1454,8 +1454,8 @@ async function lerArquivoImportacao(arquivo) {
     }
   });
 
-  if (!colunaProduto || !colunaMarca) {
-    throw new Error('O arquivo precisa conter as colunas "produto" e "marca".');
+  if (!colunaProduto) {
+    throw new Error('O arquivo precisa conter a coluna obrigatória "produto".');
   }
 
   const produtos = [];
@@ -1463,16 +1463,17 @@ async function lerArquivoImportacao(arquivo) {
 
   planilha.eachRow((linha, numeroLinha) => {
     if (numeroLinha === 1) return;
-
     const produto = obterValorCelula(linha.getCell(colunaProduto));
 
-    const marca = obterValorCelula(linha.getCell(colunaMarca));
+    const marca = colunaMarca
+      ? obterValorCelula(linha.getCell(colunaMarca))
+      : "";
 
-    // Ignorar linhas completamente vazias.
+    // Ignorar linhas sem produto.
     if (!produto && !marca) return;
 
-    if (!produto || !marca) {
-      erros.push(`Linha ${numeroLinha}: produto e marca são obrigatórios.`);
+    if (!produto) {
+      erros.push(`Linha ${numeroLinha}: o nome do produto é obrigatório.`);
       return;
     }
 
@@ -1483,7 +1484,7 @@ async function lerArquivoImportacao(arquivo) {
 
     produtos.push({
       produto,
-      marca,
+      marca: marca || "",
     });
   });
 
