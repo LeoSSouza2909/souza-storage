@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./CriarConta.css";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
+import { requisicaoApi } from "../services/api";
 
 function FieldIcon({ type }) {
   const common = {
@@ -64,30 +65,185 @@ function RegisterField({ icon, ...props }) {
 }
 
 function CriarConta() {
-  const [modalConfirmacaoAberta, setModalConfirmacaoAberta] =
-    useState(false);
+  const [modalConfirmacaoAberta, setModalConfirmacaoAberta] = useState(false);
 
   const [codigo, setCodigo] = useState(["", "", "", ""]);
   const [email, setEmail] = useState("");
+  const [carregando, setCarregando] = useState(false);
+  const [erroCadastro, setErroCadastro] = useState("");
+  const [carregandoConfirmacao, setCarregandoConfirmacao] = useState(false);
+  const [erroConfirmacao, setErroConfirmacao] = useState("");
+  const [reenviandoCodigo, setReenviandoCodigo] = useState(false);
+
+  const camposCodigoRef = useRef([]);
+
   const navigate = useNavigate();
 
-  function handleSubmit(event) {
+  function atualizarDigito(index, valor) {
+    const numeros = valor.replace(/\D/g, "");
+
+    if (!numeros) {
+      setCodigo((anterior) =>
+        anterior.map((item, i) => (i === index ? "" : item)),
+      );
+      return;
+    }
+
+    const digitos = numeros.split("");
+
+    setCodigo((anterior) => {
+      const novoCodigo = [...anterior];
+
+      digitos.forEach((digito, i) => {
+        if (index + i < 4) {
+          novoCodigo[index + i] = digito;
+        }
+      });
+
+      return novoCodigo;
+    });
+
+    const proximoCampo = Math.min(index + digitos.length, 3);
+
+    camposCodigoRef.current[proximoCampo]?.focus();
+  }
+
+  function tratarBackspace(event, index) {
+    if (event.key === "Backspace" && !codigo[index] && index > 0) {
+      camposCodigoRef.current[index - 1]?.focus();
+    }
+
+    if (event.key === "ArrowLeft" && index > 0) {
+      camposCodigoRef.current[index - 1]?.focus();
+    }
+
+    if (event.key === "ArrowRight" && index < 3) {
+      camposCodigoRef.current[index + 1]?.focus();
+    }
+  }
+
+  function colarCodigo(event) {
     event.preventDefault();
+
+    const texto = event.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 4);
+
+    if (!texto) return;
+
+    const digitos = texto.split("");
+
+    setCodigo([
+      digitos[0] || "",
+      digitos[1] || "",
+      digitos[2] || "",
+      digitos[3] || "",
+    ]);
+
+    camposCodigoRef.current[Math.min(digitos.length, 3)]?.focus();
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    if (carregando) return;
 
     const form = event.currentTarget;
     const data = new FormData(form);
 
+    const nome = data.get("nome").trim();
+    const cnpj = data.get("cnpj").trim();
+    const emailCadastro = data.get("email").trim();
     const senha = data.get("senha");
     const confirmarSenha = data.get("confirmarSenha");
 
     if (senha !== confirmarSenha) {
-      alert("As senhas não coincidem.");
+      setErroCadastro("As senhas não coincidem.");
       return;
     }
 
-    setEmail(data.get("email"));
-    setCodigo(["", "", "", ""]);
-    setModalConfirmacaoAberta(true);
+    setErroCadastro("");
+    setCarregando(true);
+
+    try {
+      const resposta = await requisicaoApi("/api/auth/cadastro", {
+        method: "POST",
+        body: JSON.stringify({
+          nome,
+          email: emailCadastro,
+          cnpj,
+          senha,
+        }),
+      });
+
+      setEmail(resposta.email || emailCadastro);
+      setCodigo(["", "", "", ""]);
+      setErroConfirmacao("");
+      setModalConfirmacaoAberta(true);
+    } catch (erro) {
+      setErroCadastro(erro.message || "Não foi possível realizar o cadastro.");
+    } finally {
+      setCarregando(false);
+    }
+  }
+
+  async function verificarCodigo(event) {
+    event.preventDefault();
+
+    if (carregandoConfirmacao) return;
+
+    const codigoCompleto = codigo.join("");
+
+    if (codigoCompleto.length !== 4) {
+      setErroConfirmacao("Digite os quatro números do código.");
+      return;
+    }
+
+    try {
+      setCarregandoConfirmacao(true);
+      setErroConfirmacao("");
+
+      const resposta = await requisicaoApi("/api/auth/cadastro/verificar", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          codigo: codigoCompleto,
+        }),
+      });
+
+      setModalConfirmacaoAberta(false);
+      alert(resposta.mensagem || "Conta criada com sucesso!");
+      navigate("/");
+    } catch (erro) {
+      setErroConfirmacao(
+        erro.message || "Não foi possível confirmar o código.",
+      );
+    } finally {
+      setCarregandoConfirmacao(false);
+    }
+  }
+
+  async function reenviarCodigo() {
+    if (reenviandoCodigo) return;
+
+    try {
+      setReenviandoCodigo(true);
+      setErroConfirmacao("");
+
+      const resposta = await requisicaoApi("/api/auth/cadastro/reenviar", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+
+      setCodigo(["", "", "", ""]);
+
+      alert(resposta.mensagem || "Novo código enviado com sucesso!");
+    } catch (erro) {
+      setErroConfirmacao(erro.message || "Não foi possível reenviar o código.");
+    } finally {
+      setReenviandoCodigo(false);
+    }
   }
 
   return (
@@ -99,10 +255,7 @@ function CriarConta() {
       <section className="register-card">
         <h1>Criar Conta</h1>
 
-        <form
-          onSubmit={handleSubmit}
-          className="register-form"
-        >
+        <form onSubmit={handleSubmit} className="register-form">
           <div className="register-name-cnpj">
             <RegisterField
               icon="user"
@@ -154,13 +307,21 @@ function CriarConta() {
             required
           />
 
-          <button type="submit">Criar</button>
+          {erroCadastro && (
+            <p className="register-error" role="alert">
+              {erroCadastro}
+            </p>
+          )}
+
+          <button type="submit" disabled={carregando}>
+            {carregando ? "Criando..." : "Criar"}
+          </button>
         </form>
 
         <button
           type="button"
           className="register-back"
-          onClick={() => window.history.back()}
+          onClick={() => navigate("/")}
         >
           Já tenho conta!
         </button>
@@ -178,68 +339,58 @@ function CriarConta() {
             aria-labelledby="confirmation-title"
             onClick={(event) => event.stopPropagation()}
           >
-            <p
-              className="confirmation-message"
-              id="confirmation-title"
-            >
+            <p className="confirmation-message" id="confirmation-title">
               Por favor, digite o código
               <br />
               que enviamos agora para:
             </p>
 
-            <strong className="confirmation-email">
-              {email}
-            </strong>
-            
-                <form
-                  className="confirmation-form"
-                  onSubmit={(event) => {
-                    event.preventDefault();
+            <strong className="confirmation-email">{email}</strong>
 
-                    setModalConfirmacaoAberta(false);
-
-                    alert("Conta criada e confirmada com sucesso!");
-
-                    navigate("/");
-                  }}
-                >
-
+            <form className="confirmation-form" onSubmit={verificarCodigo}>
               <div className="confirmation-code">
                 {codigo.map((digito, index) => (
                   <input
                     key={index}
+                    ref={(elemento) => {
+                      camposCodigoRef.current[index] = elemento;
+                    }}
                     type="text"
                     inputMode="numeric"
                     pattern="[0-9]*"
                     maxLength={1}
+                    autoComplete={index === 0 ? "one-time-code" : "off"}
+                    autoFocus={index === 0}
                     aria-label={`Dígito ${index + 1} do código`}
                     value={digito}
-                    onChange={(event) => {
-                      const valor = event.target.value.replace(
-                        /\D/g,
-                        ""
-                      );
-
-                      setCodigo((anterior) =>
-                        anterior.map((item, i) =>
-                          i === index ? valor.slice(-1) : item
-                        )
-                      );
-                    }}
+                    onChange={(event) =>
+                      atualizarDigito(index, event.target.value)
+                    }
+                    onKeyDown={(event) => tratarBackspace(event, index)}
+                    onPaste={colarCodigo}
                     required
                   />
                 ))}
               </div>
 
-              <button type="submit">Verificar</button>
+              {erroConfirmacao && (
+                <p className="register-error" role="alert">
+                  {erroConfirmacao}
+                </p>
+              )}
+
+              <button type="submit" disabled={carregandoConfirmacao}>
+                {carregandoConfirmacao ? "Verificando..." : "Verificar"}
+              </button>
             </form>
 
             <button
               type="button"
               className="resend-code"
-              onClick={() => setCodigo(["", "", "", ""])}
+              onClick={reenviarCodigo}
+              disabled={reenviandoCodigo || carregandoConfirmacao}
             >
-              Reenviar código
+              {reenviandoCodigo ? "Enviando..." : "Reenviar código"}
             </button>
           </section>
         </div>

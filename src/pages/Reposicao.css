@@ -144,7 +144,6 @@
     background 0.15s ease,
     transform 0.15s ease;
 }
-
 .reposicao-piece:hover {
   background: #d2d2d5;
 }
@@ -523,5 +522,1057 @@
     border-color: #55555d;
     background: #303038;
     color: #aaa;
+  }
+}
+
+/* ==============================
+   PEÇAS SELECIONADAS
+============================== */
+
+.reposicao-piece.selecionada {
+  border: 2px solid #0865f9;
+  background: #dce8ff;
+  box-shadow:
+    0 0 0 2px rgb(8 101 249 / 15%),
+    0 2px 5px rgb(0 0 0 / 30%);
+}
+
+.reposicao-piece.selecionada:hover {
+  background: #d0e0ff;
+}
+
+/* Indicador de seleção */
+
+.reposicao-piece-check {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: #0865f9;
+  color: #fff;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/* Permite posicionar o indicador dentro do cartão */
+
+.reposicao-piece {
+  position: relative;
+}
+
+/* ==============================
+   PEÇAS JÁ ENVIADAS
+============================== */
+
+.reposicao-piece.ja-enviada {
+  border-color: #999;
+  background: #bdbdc1;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.7;
+  box-shadow: none;
+}
+
+.reposicao-piece.ja-enviada:hover {
+  background: #bdbdc1;
+}
+
+.reposicao-piece.ja-enviada:active {
+  transform: none;
+}
+
+.reposicao-piece-status {
+  display: block;
+  max-width: 100%;
+  padding: 5px 9px;
+  border-radius: 12px;
+  background: #777;
+  color: #fff;
+  font-size: 10px;
+  text-align: center;
+}
+
+/* ==============================
+   BOTÃO ENVIAR DESABILITADO
+============================== */
+
+.reposicao-send-button:disabled {
+  background: #999;
+  color: #e5e5e5;
+  cursor: not-allowed;
+  opacity: 0.7;
+  box-shadow: none;
+}
+
+.reposicao-send-button:disabled:hover {
+  filter: none;
+}
+
+/* ==============================
+   MENSAGEM DE ERRO
+============================== */
+
+.reposicao-error {
+  position: relative;
+  z-index: 2;
+  margin: 8px auto;
+  padding: 9px 14px;
+  border: 1px solid #d9534f;
+  border-radius: 10px;
+  background: #ffe5e5;
+  color: #a32121;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ==============================
+   MODO ESCURO - SELEÇÃO
+============================== */
+
+@media (prefers-color-scheme: dark) {
+  .reposicao-piece.selecionada {
+    border-color: #3985ff;
+    background: #202f49;
+    color: #fff;
+    box-shadow: 0 0 0 2px rgb(57 133 255 / 20%);
+  }
+
+  .reposicao-piece.selecionada:hover {
+    background: #293b59;
+  }
+
+  .reposicao-piece.ja-enviada {
+    border-color: #484850;
+    background: #202026;
+    color: #888;
+  }
+
+  .reposicao-piece.ja-enviada:hover {
+    background: #202026;
+  }
+
+  .reposicao-piece-status {
+    background: #55555d;
+    color: #eee;
+  }
+
+  .reposicao-error {
+    border-color: #a94442;
+    background: #442626;
+    color: #ffbaba;
+  }
+}
+
+/* ==============================
+   SELEÇÃO DOS CARTÕES
+============================== */
+
+.reposicao-piece.selecionada {
+  border: 2px solid #0865f9 !important;
+  background: #dce8ff !important;
+  box-shadow: 0 0 0 2px rgb(8 101 249 / 20%);
+}
+
+.reposicao-piece.selecionada .reposicao-piece-name {
+  color: #123d80;
+  font-weight: bold;
+}
+
+.reposicao-piece-check {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: #0865f9;
+  color: #fff;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.reposicao-piece {
+  position: relative;
+}
+
+@media (prefers-color-scheme: dark) {
+  .reposicao-piece.selecionada {
+    border-color: #3985ff !important;
+    background: #202f49 !important;
+  }
+
+  .reposicao-piece.selecionada .reposicao-piece-name {
+    color: #fff;
+  }
+}
+
+.editar-feedback {
+  width: 100%;
+  margin: 10px 0;
+  color: #d93025;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ==============================
+   MODAL EDITAR - VISUAL ORIGINAL
+============================== */
+
+.editar-modal-overlay {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgb(0 0 0 / 35%);
+}
+
+.editar-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 7px;
+
+  width: 260px;
+  max-width: calc(100vw - 32px);
+  height: 85px;
+  min-height: 85px;
+
+  padding: 9px 10px 8px;
+  box-sizing: border-box;
+
+  border: 1px solid #99999d;
+  border-radius: 11px;
+  background: #c9c9cd;
+  box-shadow: 0 3px 8px rgb(0 0 0 / 25%);
+}
+
+.editar-modal-fechar {
+  display: none;
+}
+
+.editar-modal-campos {
+  display: flex;
+  gap: 3px;
+  width: 100%;
+  height: 17px;
+}
+
+.editar-modal-campos input {
+  flex: 1;
+  width: 50%;
+  min-width: 0;
+  height: 17px;
+  padding: 0 9px;
+  box-sizing: border-box;
+
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  outline: none;
+
+  background: #d0d0d3;
+  color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+}
+
+.editar-modal-campos input::placeholder {
+  color: #999;
+}
+
+.editar-modal-rodape {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex: 1;
+  min-height: 0;
+}
+
+.editar-imagem-seletor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+
+  width: 43px;
+  height: 42px;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  border: 1px solid #aaa;
+  border-radius: 9px;
+  background: #d0d0d3;
+  color: #999;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.editar-imagem-mais {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.editar-imagem-seletor img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.editar-salvar-button {
+  width: 42px;
+  height: 13px;
+  padding: 0;
+
+  border: none;
+  border-radius: 10px;
+  background: #48d51e;
+  color: #fff;
+
+  font-size: 9px;
+  line-height: 13px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
+}
+
+.editar-salvar-button:hover {
+  filter: brightness(1.08);
+}
+
+/* ==============================
+   MODAL EDITAR - TAMANHO MAIOR
+============================== */
+
+.editar-modal {
+  width: 460px;
+  max-width: calc(100vw - 40px);
+  height: 155px;
+  min-height: 155px;
+  padding: 17px 18px 14px;
+  gap: 12px;
+  border-radius: 15px;
+}
+
+.editar-modal-campos {
+  gap: 6px;
+  height: 32px;
+}
+
+.editar-modal-campos input {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+  border-radius: 16px;
+}
+
+.editar-modal-rodape {
+  align-items: flex-end;
+}
+
+.editar-imagem-seletor {
+  width: 76px;
+  height: 72px;
+  gap: 3px;
+  font-size: 12px;
+  border-radius: 12px;
+}
+
+.editar-imagem-mais {
+  font-size: 25px;
+}
+
+.editar-salvar-button {
+  width: 76px;
+  height: 25px;
+  font-size: 12px;
+  border-radius: 15px;
+}
+
+@media (max-width: 600px) {
+  .editar-modal {
+    width: 92%;
+    height: 145px;
+    min-height: 145px;
+    padding: 15px 13px 12px;
+  }
+
+  .editar-modal-campos input {
+    font-size: 12px;
+  }
+
+  .editar-imagem-seletor {
+    width: 68px;
+    height: 65px;
+  }
+}
+
+/* =====================================
+   PADRONIZAÇÃO VISUAL DOS CARDS
+   REPOSIÇÃO E EDITAR
+===================================== */
+
+/* Imagem dos produtos */
+
+.reposicao-piece-image {
+  display: block;
+  flex: 0 0 auto;
+  width: 65px;
+  height: 95px;
+  max-height: none;
+  object-fit: contain;
+}
+
+/* Espaço reservado quando não existe imagem */
+
+.reposicao-piece-image-vazia {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  height: 95px;
+  color: #999;
+  font-size: 12px;
+}
+
+/* Nome do produto */
+
+.reposicao-piece-name {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Marca do produto */
+
+/* NOME DA MARCA NOS CARDS */
+.reposicao-piece-brand {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  color: #555;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .reposicao-piece-brand {
+    font-size: 15px;
+  }
+}
+
+/* Espaçamento interno dos cards */
+
+.reposicao-piece {
+  gap: 7px;
+}
+
+/* =====================================
+   TABLETS
+===================================== */
+
+@media (max-width: 700px) {
+  .reposicao-piece-image,
+  .reposicao-piece-image-vazia {
+    width: 55px;
+    height: 78px;
+  }
+}
+
+/* =====================================
+   CELULARES
+===================================== */
+
+@media (max-width: 420px) {
+  .reposicao-piece-image,
+  .reposicao-piece-image-vazia {
+    width: 45px;
+    height: 65px;
+  }
+}
+
+/* =====================================
+   MODO ESCURO
+===================================== */
+
+@media (prefers-color-scheme: dark) {
+  .reposicao-piece-brand {
+    color: #aaa;
+  }
+
+  .reposicao-piece-image-vazia {
+    color: #aaa;
+  }
+
+  .reposicao-piece.selecionada .reposicao-piece-brand {
+    color: #d5e2ff;
+  }
+}
+
+/* ==============================
+   AUMENTAR TEXTOS DOS CARDS
+============================== */
+
+.reposicao-piece-name {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.reposicao-piece-status {
+  font-size: 12px;
+  line-height: 1.3;
+  padding: 6px 8px;
+}
+
+.reposicao-piece-check {
+  font-size: 16px;
+}
+
+/* Ajuste para telas menores */
+@media (max-width: 600px) {
+  .reposicao-piece-name {
+    font-size: 15px;
+  }
+
+  .reposicao-piece-status {
+    font-size: 11px;
+  }
+}
+
+/* =====================================
+   MODAL DE EDIÇÃO - CORES ADAPTÁVEIS
+===================================== */
+
+.editar-modal {
+  background: var(--surface, #c9c9cd);
+  color: var(--text-h, #08060d);
+  border: 1px solid var(--border, #99999d);
+}
+
+.editar-modal-fechar {
+  color: var(--text-secondary, #555);
+}
+
+.editar-modal-campos input {
+  background: var(--surface-secondary, #d0d0d3);
+  color: var(--text-h, #08060d);
+  border-color: var(--border, #aaa);
+}
+
+.editar-modal-campos input::placeholder {
+  color: var(--text-secondary, #999);
+}
+
+.editar-imagem-seletor {
+  background: var(--surface-secondary, #d0d0d3);
+  color: var(--text-secondary, #999);
+  border-color: var(--border, #aaa);
+}
+
+/* MODAL DE EDITAR PRODUTO - TAMANHO MAIOR */
+
+.editar-modal {
+  width: min(620px, 94vw);
+  min-height: 230px;
+  height: auto;
+  padding: 24px;
+}
+
+.editar-modal-campos {
+  gap: 16px;
+}
+
+.editar-modal-campos input {
+  min-height: 42px;
+  font-size: 15px;
+}
+
+@media (max-width: 600px) {
+  .editar-modal {
+    width: 94vw;
+    min-height: 210px;
+    padding: 18px;
+  }
+}
+
+.editar-modal-rodape {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+.editar-modal-rodape .account-logo-section {
+  margin-bottom: 0;
+  transform: translateY(8px);
+}
+
+/* =====================================
+   BOTÕES DA TELA EDITAR
+===================================== */
+
+.editar-toolbar-acoes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.editar-importar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid #0865f9;
+  border-radius: 8px;
+  background: transparent;
+  color: #0865f9;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.editar-importar-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.editar-importar-button:hover {
+  background: rgba(8, 101, 249, 0.09);
+}
+
+/* =====================================
+   MODAL DE IMPORTAÇÃO
+===================================== */
+
+.importacao-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(3px);
+}
+
+.importacao-modal {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 27px;
+  border: 1px solid var(--border, #e5e4e7);
+  border-radius: 16px;
+  background: var(--surface, #fff);
+  color: var(--text-h, #08060d);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+}
+
+.importacao-modal-header {
+  margin-bottom: 22px;
+  padding-right: 25px;
+}
+
+.importacao-modal-header h2 {
+  margin: 0 0 7px;
+  font-size: 21px;
+}
+
+.importacao-modal-header p {
+  margin: 0;
+  color: var(--text, #6b6375);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.importacao-exemplo {
+  margin-bottom: 22px;
+  padding: 15px;
+  border: 1px solid var(--border, #e5e4e7);
+  border-radius: 11px;
+  background: var(--background, #f7f7f9);
+}
+
+.importacao-exemplo-titulo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 13px;
+  font-size: 13px;
+}
+
+.importacao-exemplo-titulo svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: #198754;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.importacao-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  font-size: 12px;
+}
+
+.importacao-tabela th,
+.importacao-tabela td {
+  padding: 10px;
+  border: 1px solid var(--border, #ddd);
+  text-align: left;
+}
+
+.importacao-tabela th {
+  background: rgba(8, 101, 249, 0.1);
+  color: var(--text-h, #08060d);
+  font-weight: 700;
+}
+
+.importacao-tabela td {
+  background: var(--surface, #fff);
+  color: var(--text, #333);
+}
+
+.importacao-observacao {
+  margin: 12px 0 0;
+  color: var(--text, #6b6375);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.importacao-arquivo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.importacao-arquivo-titulo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.importacao-arquivo-titulo strong {
+  font-size: 14px;
+}
+
+.importacao-arquivo-titulo span {
+  color: var(--text, #6b6375);
+  font-size: 11px;
+}
+
+.importacao-seletor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 12px;
+  border: 1px dashed #0865f9;
+  border-radius: 10px;
+  background: rgba(8, 101, 249, 0.04);
+  color: #0865f9;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.importacao-seletor:hover {
+  background: rgba(8, 101, 249, 0.1);
+}
+
+.importacao-seletor svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.importacao-seletor input {
+  display: none;
+}
+
+.importacao-arquivo-selecionado {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px;
+  border: 1px solid var(--border, #e5e4e7);
+  border-radius: 9px;
+  background: var(--background, #f7f7f9);
+}
+
+.importacao-arquivo-selecionado > svg {
+  width: 23px;
+  height: 23px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: #198754;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.importacao-arquivo-selecionado div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.importacao-arquivo-selecionado strong {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.importacao-arquivo-selecionado span {
+  color: var(--text, #6b6375);
+  font-size: 10px;
+}
+
+.importacao-arquivo-selecionado button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #dc3545;
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.importacao-erro {
+  margin: 0;
+  color: #dc3545;
+  font-size: 12px;
+}
+
+.importacao-modal-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.importacao-modal-acoes button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.importacao-cancelar {
+  background: var(--background, #eee);
+  color: var(--text-h, #08060d);
+}
+
+.importacao-confirmar {
+  background: #0865f9;
+  color: #fff;
+}
+
+.importacao-confirmar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* MODO ESCURO */
+
+@media (prefers-color-scheme: dark) {
+  .importacao-exemplo {
+    background: var(--background, #1b1b20);
+  }
+
+  .importacao-tabela th {
+    background: rgba(8, 101, 249, 0.2);
+  }
+
+  .importacao-tabela td {
+    background: var(--surface, #29292f);
+  }
+
+  .importacao-arquivo-selecionado {
+    background: var(--background, #1b1b20);
+  }
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 600px) {
+  .editar-toolbar-acoes {
+    gap: 6px;
+  }
+
+  .editar-importar-button {
+    padding: 0 9px;
+    font-size: 11px;
+  }
+
+  .importacao-modal {
+    padding: 22px 17px;
+  }
+
+  .importacao-modal-header h2 {
+    font-size: 18px;
+  }
+
+  .importacao-exemplo {
+    padding: 11px;
+  }
+
+  .importacao-modal-acoes button {
+    padding: 0 12px;
+    font-size: 11px;
+  }
+}
+
+/* =====================================
+   CORREÇÃO DA BARRA DE FERRAMENTAS
+   TELA EDITAR
+===================================== */
+
+.reposicao-toolbar.editar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 0 15px;
+}
+
+/* Campo de pesquisa */
+
+.reposicao-toolbar.editar-toolbar .reposicao-search {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  flex: none;
+  width: 250px;
+  max-width: 35%;
+  min-width: 0;
+
+  height: 28px;
+}
+
+/* Área dos botões */
+
+.reposicao-toolbar.editar-toolbar .editar-toolbar-acoes {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 0 0 auto;
+  margin-left: auto;
+  pointer-events: auto;
+}
+
+/* Botão Importar */
+
+.reposicao-toolbar.editar-toolbar .editar-importar-button {
+  position: static;
+  flex-shrink: 0;
+  height: 32px;
+  min-height: 32px;
+  white-space: nowrap;
+}
+
+/* Botão Adicionar */
+
+.reposicao-toolbar.editar-toolbar .reposicao-send-button {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+  width: 95px;
+  height: 32px;
+  white-space: nowrap;
+}
+
+/* =====================================
+   RESPONSIVIDADE
+===================================== */
+
+@media (max-width: 600px) {
+  .reposicao-toolbar.editar-toolbar {
+    gap: 7px;
+    padding: 0 7px;
+  }
+
+  .reposicao-toolbar.editar-toolbar .reposicao-search {
+    left: 43%;
+    width: 30%;
+    max-width: 30%;
+    height: 29px;
+  }
+
+  .reposicao-toolbar.editar-toolbar .editar-toolbar-acoes {
+    gap: 5px;
+  }
+
+  .reposicao-toolbar.editar-toolbar .editar-importar-button {
+    gap: 4px;
+    height: 29px;
+    min-height: 29px;
+    padding: 0 7px;
+    font-size: 11px;
+  }
+
+  .reposicao-toolbar.editar-toolbar .editar-importar-button svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .reposicao-toolbar.editar-toolbar .reposicao-send-button {
+    width: 78px;
+    height: 29px;
+    font-size: 11px;
   }
 }

@@ -131,14 +131,170 @@
   z-index: 10;
   top: 55px;
   right: 12px;
-  width: min(220px, calc(100% - 24px));
-  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  width: min(370px, calc(100% - 24px));
+  max-height: min(480px, calc(100dvh - 75px));
+  overflow: hidden;
   border: 1px solid var(--border, #aaa);
-  border-radius: 9px;
+  border-radius: 12px;
   background: var(--surface, #fff);
   color: var(--text, #333);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 25%);
+}
+
+.notifications-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px;
+  border-bottom: 1px solid var(--border, #ddd);
+}
+
+.notifications-header h2 {
+  margin: 0 0 3px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.notifications-header span {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.notifications-read-all {
+  padding: 5px;
+  border: none;
+  background: transparent;
+  color: #0865f9;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.notifications-read-all:hover {
+  text-decoration: underline;
+}
+
+.notifications-list {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-bottom: 1px solid var(--border, #e5e5e5);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:hover {
+  background: rgb(8 101 249 / 6%);
+}
+
+.notification-indicator {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.notification-unread .notification-indicator {
+  background: #0865f9;
+}
+
+.notification-item-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.notification-item-content strong {
   font-size: 13px;
-  box-shadow: 0 3px 7px rgb(0 0 0 / 25%);
+  font-weight: 600;
+}
+
+.notification-item-content > span {
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  opacity: 0.85;
+}
+
+.notification-item-content small {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.notification-read .notification-item-content strong {
+  font-weight: 400;
+}
+
+.notifications-empty,
+.notifications-error {
+  margin: 0;
+  padding: 22px 12px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.notifications-error {
+  color: #d93636;
+}
+
+.notification-button {
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border: 1px solid #0865f9;
+  border-radius: 20px;
+  background: #e53935;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .notification-item:hover {
+    background: rgb(255 255 255 / 6%);
+  }
+}
+
+@media (max-width: 600px) {
+  .layout-notifications {
+    right: 8px;
+    width: min(370px, calc(100% - 16px));
+  }
+
+  .notifications-header {
+    padding: 11px;
+  }
 }
 
 .layout-content {
@@ -242,5 +398,345 @@
 
   .layout-notifications {
     right: 8px;
+  }
+}
+
+/* BOTÃO SAIR DA CONTA */
+
+.layout-logout-button {
+  color: #d93636;
+}
+
+.layout-logout-button svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.layout-logout-button:hover {
+  background: rgb(217 54 54 / 10%);
+}
+
+/* =====================================
+   AÇÕES DO CABEÇALHO
+===================================== */
+
+.layout-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+}
+
+.account-button svg {
+  width: 27px;
+  height: 27px;
+  fill: none;
+  stroke: white;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* =====================================
+   MENU DA CONTA
+===================================== */
+
+.account-menu {
+  position: absolute;
+  z-index: 15;
+  top: 55px;
+  right: 12px;
+  width: 220px;
+  padding: 7px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e5e4e7);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.16);
+}
+
+.account-menu button {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 12px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-h, #08060d);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.account-menu button:hover {
+  background: var(--accent-bg, rgba(170, 59, 255, 0.1));
+}
+
+.account-menu svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.account-menu .account-logout {
+  color: #dc3545;
+}
+
+/* =====================================
+   MODAL DA CONTA
+===================================== */
+
+.account-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+.account-modal {
+  width: 100%;
+  max-width: 510px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 26px;
+  border-radius: 17px;
+  background: var(--surface, #fff);
+  color: var(--text-h, #08060d);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.22);
+}
+
+.account-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 24px;
+}
+
+.account-modal-header h2 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.account-modal-header p {
+  margin: 6px 0 0;
+  color: var(--text, #6b6375);
+  font-size: 13px;
+}
+
+.account-modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text, #6b6375);
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.account-modal-close:hover {
+  background: var(--accent-bg, rgba(170, 59, 255, 0.1));
+}
+
+.account-logo-section {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  margin-bottom: 23px;
+  padding: 15px;
+  border: 1px solid var(--border, #e5e4e7);
+  border-radius: 12px;
+}
+
+.account-logo-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 82px;
+  height: 82px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px dashed var(--border, #e5e4e7);
+  border-radius: 12px;
+  background: var(--background, #f5f5f7);
+}
+
+.account-logo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.account-logo-preview svg {
+  width: 40px;
+  height: 40px;
+  fill: none;
+  stroke: #92909a;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.account-logo-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  min-width: 0;
+}
+
+.account-logo-info strong {
+  font-size: 14px;
+}
+
+.account-logo-info span {
+  color: var(--text, #6b6375);
+  font-size: 11px;
+}
+
+.account-logo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  padding: 7px 11px;
+  border-radius: 7px;
+  background: var(--accent, #0865f9);
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.account-logo-button input {
+  display: none;
+}
+
+.account-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 17px;
+}
+
+.account-field label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.account-field input {
+  width: 100%;
+  height: 43px;
+  padding: 0 12px;
+  border: 1px solid var(--border, #e5e4e7);
+  border-radius: 8px;
+  outline: none;
+  background: var(--background, #fff);
+  color: var(--text-h, #08060d);
+  font: inherit;
+  font-size: 13px;
+}
+
+.account-field input:focus {
+  border-color: #0865f9;
+  box-shadow: 0 0 0 2px rgba(8, 101, 249, 0.12);
+}
+
+.account-message {
+  margin: 10px 0;
+  font-size: 12px;
+}
+
+.account-error {
+  color: #dc3545;
+}
+
+.account-success {
+  color: #198754;
+}
+
+.account-loading {
+  padding: 25px 0;
+  color: var(--text, #6b6375);
+  text-align: center;
+}
+
+.account-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.account-modal-actions button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.account-cancel-button {
+  background: var(--background, #eee);
+  color: var(--text-h, #08060d);
+}
+
+.account-save-button {
+  background: #0865f9;
+  color: white;
+}
+
+.account-save-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* =====================================
+   RESPONSIVIDADE
+===================================== */
+
+@media (max-width: 480px) {
+  .account-modal {
+    padding: 20px 16px;
+  }
+
+  .account-modal-header h2 {
+    font-size: 18px;
+  }
+
+  .account-logo-section {
+    gap: 12px;
+    padding: 11px;
+  }
+
+  .account-logo-preview {
+    width: 68px;
+    height: 68px;
+  }
+
+  .account-modal-actions button {
+    padding: 0 12px;
+    font-size: 11px;
   }
 }

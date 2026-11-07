@@ -329,3 +329,231 @@
     color: #c5c5cc;
   }
 }
+
+/* CONTADOR DE PEÇAS SELECIONADAS */
+
+.pedido-modal-contador {
+  margin: -5px 0 10px;
+  color: #666;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* PEÇA SELECIONADA */
+
+.pedido-modal-peca {
+  position: relative;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.pedido-modal-peca.pedido-peca-selecionada {
+  border-color: #0865f9;
+  background: #e4edff;
+}
+
+.pedido-modal-check {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: #0865f9;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.pedido-modal-peca small {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pedido-modal-erro {
+  margin: 0 0 10px;
+  color: #d32f2f;
+  font-size: 12px;
+  text-align: center;
+}
+
+.pedido-download-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pedido-carregando {
+  color: white;
+  font-weight: bold;
+}
+
+/* ==============================
+   AUMENTAR TEXTOS DOS CARDS
+============================== */
+
+.pedido-modal-peca span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pedido-modal-peca small {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+@media (max-width: 420px) {
+  .pedido-modal-peca span {
+    font-size: 12px;
+  }
+
+  .pedido-modal-peca small {
+    font-size: 11px;
+  }
+}
+
+/* BOTÃO SELECIONAR TODOS */
+
+.pedido-selecionar-todos {
+  display: block;
+  margin: 12px 0 5px auto;
+  padding: 7px 13px;
+
+  border: 1px solid #0865f9;
+  border-radius: 7px;
+
+  background: transparent;
+  color: #0865f9;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.pedido-selecionar-todos:hover {
+  background: #0865f9;
+  color: #fff;
+}
+
+.pedido-selecionar-todos:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =====================================
+   MODAL DE ADICIONAR PRODUTO
+   CORES ADAPTÁVEIS AO TEMA
+===================================== */
+
+.pedido-modal {
+  background: var(--bg, #fff);
+  color: var(--text-h, #08060d);
+}
+
+.pedido-modal-search {
+  background: var(--surface-secondary, #d0d0d3);
+}
+
+.pedido-modal-search input {
+  color: var(--text-h, #333);
+}
+
+.pedido-modal-search input::placeholder {
+  color: var(--text-secondary, #aaa);
+}
+
+.pedido-modal-search svg {
+  stroke: var(--text, #222);
+}
+
+.pedido-modal-peca {
+  background: var(--surface, #c9c9cd);
+  color: var(--text, #555);
+  border-color: transparent;
+}
+
+.pedido-modal-peca.pedido-peca-selecionada {
+  background: var(--accent-bg, #e4edff);
+  border-color: var(--header, #0865f9);
+  color: var(--text-h, #08060d);
+}
+
+.pedido-modal-imagem-vazia {
+  color: var(--text-secondary, #999);
+}
+
+.pedido-modal-vazio,
+.pedido-modal-contador {
+  color: var(--text-secondary, #777);
+}
+
+.pedido-modal-erro {
+  color: #d32f2f;
+}
+
+.pedido-selecionar-todos {
+  border-color: var(--header, #0865f9);
+  color: var(--header, #0865f9);
+}
+
+/* Ajustes específicos do tema escuro */
+
+@media (prefers-color-scheme: dark) {
+  .pedido-modal-peca.pedido-peca-selecionada {
+    background: #263650;
+    border-color: #80adff;
+    color: #f1f1f1;
+  }
+
+  .pedido-modal-contador {
+    color: #c5c5cc;
+  }
+}
+
+/* MODAL DE ADICIONAR PRODUTO - TAMANHO MAIOR */
+
+.pedido-modal {
+  width: min(900px, 94vw);
+  height: min(780px, 90vh);
+  padding: 10px;
+}
+
+.pedido-modal-grid {
+  gap: 16px;
+}
+
+.pedido-modal-peca {
+  height: 165px;
+}
+
+.pedido-modal-peca img,
+.pedido-modal-imagem-vazia {
+  width: 75px;
+  height: 105px;
+}
+
+@media (max-width: 700px) {
+  .pedido-modal {
+    width: 96vw;
+    height: 88vh;
+  }
+
+  .pedido-modal-peca {
+    height: 135px;
+  }
+}
+
+@media (max-width: 420px) {
+  .pedido-modal {
+    width: 97vw;
+    height: 85vh;
+  }
+}

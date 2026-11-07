@@ -1,14 +1,25 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import logo from "../assets/logo.png"
+import logo from "../assets/logo.png";
+import { requisicaoApi } from "../services/api";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState("");
+
+  const [usuario, setUsuario] = useState(
+    localStorage.getItem("emailLembrado") || "",
+  );
+
   const [senha, setSenha] = useState("");
-  const [lembrar, setLembrar] = useState(true);
+
+  const [lembrar, setLembrar] = useState(
+    localStorage.getItem("lembrarUsuario") === "true",
+  );
+
+  const [erroLogin, setErroLogin] = useState("");
+  const [carregando, setCarregando] = useState(false);
+
   const [modalAberta, setModalAberta] = useState(false);
   const [emailRecuperacao, setEmailRecuperacao] = useState("");
   const [modalConfirmacaoAberta, setModalConfirmacaoAberta] = useState(false);
@@ -16,25 +27,256 @@ export default function Login() {
   const [modalNovaSenhaAberta, setModalNovaSenhaAberta] = useState(false);
   const [novaSenha, setNovaSenha] = useState("");
   const [confirmarNovaSenha, setConfirmarNovaSenha] = useState("");
+  const [erroRecuperacao, setErroRecuperacao] = useState("");
+  const [carregandoRecuperacao, setCarregandoRecuperacao] = useState(false);
+  const [reenviandoCodigo, setReenviandoCodigo] = useState(false);
+  const [mensagemReenvio, setMensagemReenvio] = useState("");
 
-  
-  function handleLogin(event) {
+  const camposCodigoRef = useRef([]);
+
+  // LEMBRAR LOGIN
+  useEffect(() => {
+    if (lembrar) {
+      localStorage.setItem("lembrarUsuario", "true");
+    } else {
+      localStorage.removeItem("lembrarUsuario");
+      localStorage.removeItem("emailLembrado");
+    }
+  }, [lembrar]);
+
+  // LOGIN CONECTADO AO BACKEND
+  async function handleLogin(event) {
     event.preventDefault();
 
-    // Redireciona para a tela de Reposição.
-    navigate("/reposicao");
+    setErroLogin("");
+    setCarregando(true);
+
+    try {
+      const resposta = await requisicaoApi("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email: usuario.trim(),
+          senha,
+        }),
+      });
+
+      if (!resposta.token) {
+        throw new Error("O servidor não retornou o token de acesso.");
+      }
+
+      // Escolher onde armazenar o token
+      const armazenamento = lembrar ? localStorage : sessionStorage;
+      const outroArmazenamento = lembrar ? sessionStorage : localStorage;
+
+      armazenamento.setItem("token", resposta.token);
+      armazenamento.setItem("usuario", JSON.stringify(resposta.usuario));
+
+      // Evitar manter duas sessões simultâneas
+      outroArmazenamento.removeItem("token");
+      outroArmazenamento.removeItem("usuario");
+
+      // Salvar ou remover o e-mail lembrado
+      if (lembrar) {
+        localStorage.setItem("emailLembrado", usuario.trim());
+      } else {
+        localStorage.removeItem("emailLembrado");
+      }
+
+      navigate("/reposicao");
+    } catch (erro) {
+      setErroLogin(erro.message);
+    } finally {
+      setCarregando(false);
+    }
   }
 
+  function atualizarDigito(index, valor) {
+    const numeros = valor.replace(/\D/g, "");
+
+    if (!numeros) {
+      setCodigo((anterior) =>
+        anterior.map((item, i) => (i === index ? "" : item)),
+      );
+      return;
+    }
+
+    const digitos = numeros.split("");
+
+    setCodigo((anterior) => {
+      const novoCodigo = [...anterior];
+
+      digitos.forEach((digito, i) => {
+        if (index + i < 4) {
+          novoCodigo[index + i] = digito;
+        }
+      });
+
+      return novoCodigo;
+    });
+
+    const proximoCampo = Math.min(index + digitos.length, 3);
+
+    camposCodigoRef.current[proximoCampo]?.focus();
+  }
+
+  function tratarBackspace(event, index) {
+    if (event.key === "Backspace" && !codigo[index] && index > 0) {
+      camposCodigoRef.current[index - 1]?.focus();
+    }
+
+    if (event.key === "ArrowLeft" && index > 0) {
+      camposCodigoRef.current[index - 1]?.focus();
+    }
+
+    if (event.key === "ArrowRight" && index < 3) {
+      camposCodigoRef.current[index + 1]?.focus();
+    }
+  }
+
+  function colarCodigo(event) {
+    event.preventDefault();
+
+    const texto = event.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 4);
+
+    if (!texto) return;
+
+    const digitos = texto.split("");
+
+    setCodigo([
+      digitos[0] || "",
+      digitos[1] || "",
+      digitos[2] || "",
+      digitos[3] || "",
+    ]);
+
+    camposCodigoRef.current[Math.min(digitos.length, 3)]?.focus();
+  }
+
+  // SOLICITAR CÓDIGO
+  async function solicitarCodigo(event) {
+    event.preventDefault();
+
+    try {
+      setCarregandoRecuperacao(true);
+      setErroRecuperacao("");
+
+      await requisicaoApi("/api/auth/senha/solicitar-codigo", {
+        method: "POST",
+        body: JSON.stringify({
+          email: emailRecuperacao.trim(),
+        }),
+      });
+
+      setCodigo(["", "", "", ""]);
+      setModalAberta(false);
+      setModalConfirmacaoAberta(true);
+    } catch (erro) {
+      setErroRecuperacao(erro.message);
+    } finally {
+      setCarregandoRecuperacao(false);
+    }
+  }
+
+  // VERIFICAR CÓDIGO
+  async function verificarCodigo(event) {
+    event.preventDefault();
+
+    try {
+      setCarregandoRecuperacao(true);
+      setErroRecuperacao("");
+
+      await requisicaoApi("/api/auth/senha/verificar-codigo", {
+        method: "POST",
+        body: JSON.stringify({
+          email: emailRecuperacao.trim(),
+          codigo: codigo.join(""),
+        }),
+      });
+
+      setModalConfirmacaoAberta(false);
+      setModalNovaSenhaAberta(true);
+    } catch (erro) {
+      setErroRecuperacao(erro.message);
+    } finally {
+      setCarregandoRecuperacao(false);
+    }
+  }
+
+  // REENVIAR CÓDIGO
+  async function reenviarCodigo() {
+    try {
+      setReenviandoCodigo(true);
+      setErroRecuperacao("");
+      setMensagemReenvio("");
+
+      const resposta = await requisicaoApi("/api/auth/senha/reenviar-codigo", {
+        method: "POST",
+        body: JSON.stringify({
+          email: emailRecuperacao.trim(),
+        }),
+      });
+
+      setCodigo(["", "", "", ""]);
+
+      setMensagemReenvio(
+        resposta.mensagem || "Um novo código foi enviado para seu e-mail.",
+      );
+    } catch (erro) {
+      setErroRecuperacao(erro.message);
+    } finally {
+      setReenviandoCodigo(false);
+    }
+  }
+
+  // ALTERAR SENHA
+  async function alterarSenha(event) {
+    event.preventDefault();
+
+    if (novaSenha !== confirmarNovaSenha) {
+      setErroRecuperacao("As senhas não coincidem.");
+      return;
+    }
+
+    if (novaSenha.length < 8) {
+      setErroRecuperacao("A senha deve possuir pelo menos 8 caracteres.");
+      return;
+    }
+
+    try {
+      setCarregandoRecuperacao(true);
+      setErroRecuperacao("");
+
+      const resposta = await requisicaoApi("/api/auth/senha/redefinir", {
+        method: "POST",
+        body: JSON.stringify({
+          email: emailRecuperacao.trim(),
+          codigo: codigo.join(""),
+          novaSenha,
+        }),
+      });
+
+      setModalNovaSenhaAberta(false);
+      setNovaSenha("");
+      setConfirmarNovaSenha("");
+      setCodigo(["", "", "", ""]);
+      setEmailRecuperacao("");
+
+      alert(resposta.mensagem || "Senha alterada com sucesso!");
+    } catch (erro) {
+      setErroRecuperacao(erro.message);
+    } finally {
+      setCarregandoRecuperacao(false);
+    }
+  }
 
   return (
     <main className="login-page">
       <section className="brand-section">
         <div className="brand-logo">
-          <img
-            src={logo}
-            alt="Souza Storage"
-            className="brand-image"
-            />
+          <img src={logo} alt="Souza Storage" className="brand-image" />
         </div>
       </section>
 
@@ -50,8 +292,8 @@ export default function Login() {
               </svg>
 
               <input
-                type="text"
-                placeholder="Usuário"
+                type="email"
+                placeholder="E-mail"
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
                 autoComplete="username"
@@ -75,6 +317,20 @@ export default function Login() {
               />
             </label>
 
+            {erroLogin && (
+              <p
+                role="alert"
+                style={{
+                  color: "#d93025",
+                  fontSize: "14px",
+                  margin: "8px 0",
+                  textAlign: "center",
+                }}
+              >
+                {erroLogin}
+              </p>
+            )}
+
             <div className="login-options">
               <label className="remember-option">
                 <input
@@ -95,8 +351,12 @@ export default function Login() {
               </button>
             </div>
 
-            <button type="submit" className="login-button">
-              Login
+            <button
+              type="submit"
+              className="login-button"
+              disabled={carregando}
+            >
+              {carregando ? "Entrando..." : "Login"}
             </button>
           </form>
 
@@ -109,166 +369,163 @@ export default function Login() {
           </button>
         </div>
       </section>
-          {modalAberta && (
-      <div
-        className="modal-overlay"
-        onClick={() => setModalAberta(false)}
-      >
-        <section
-          className="recovery-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="recovery-title"
-          onClick={(event) => event.stopPropagation()}
-        >
-          <h2 id="recovery-title">Esqueceu a senha?</h2>
 
-          <p>Redefina a senha em duas etapas</p>
-
-          <form
-            onSubmit={(event) => {
-            event.preventDefault();
-            setModalAberta(false);
-            setModalConfirmacaoAberta(true);
-          }}
+      {modalAberta && (
+        <div className="modal-overlay" onClick={() => setModalAberta(false)}>
+          <section
+            className="recovery-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="recovery-title"
+            onClick={(event) => event.stopPropagation()}
           >
-            <input
-              type="email"
-              placeholder="Email"
-              value={emailRecuperacao}
-              onChange={(event) => setEmailRecuperacao(event.target.value)}
-              required
-            />
+            <h2 id="recovery-title">Esqueceu a senha?</h2>
 
-            <button type="submit">Enviar</button>
-          </form>
-        </section>
-      </div>
-    )}
-    
-    {modalConfirmacaoAberta && (
-      <div
-        className="modal-overlay"
-        onClick={() => setModalConfirmacaoAberta(false)}
-      >
-        <section
-          className="recovery-modal confirmation-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="confirmation-title"
-          onClick={(event) => event.stopPropagation()}
+            <p>Redefina a senha em duas etapas</p>
+
+            <form onSubmit={solicitarCodigo}>
+              <input
+                type="email"
+                placeholder="E-mail"
+                value={emailRecuperacao}
+                onChange={(event) => setEmailRecuperacao(event.target.value)}
+                required
+              />
+
+              {erroRecuperacao && (
+                <p className="recovery-error" role="alert">
+                  {erroRecuperacao}
+                </p>
+              )}
+
+              <button type="submit" disabled={carregandoRecuperacao}>
+                {carregandoRecuperacao ? "Enviando..." : "Enviar"}
+              </button>
+            </form>
+          </section>
+        </div>
+      )}
+
+      {modalConfirmacaoAberta && (
+        <div
+          className="modal-overlay"
+          onClick={() => setModalConfirmacaoAberta(false)}
         >
-          <p className="confirmation-message" id="confirmation-title">
-            Por favor, digite o código
-            <br />
-            que enviamos agora para:
-          </p>
+          <section
+            className="recovery-modal confirmation-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirmation-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <p className="confirmation-message" id="confirmation-title">
+              Por favor, digite o código
+              <br />
+              que enviamos agora para:
+            </p>
 
-          <strong className="confirmation-email">
-            {emailRecuperacao}
-          </strong>
+            <strong className="confirmation-email">{emailRecuperacao}</strong>
 
-          <form
-              className="confirmation-form"
-              onSubmit={(event) => {
-                event.preventDefault();
-                setModalConfirmacaoAberta(false);
-                setModalNovaSenhaAberta(true);
-              }}
+            <form className="confirmation-form" onSubmit={verificarCodigo}>
+              <div className="confirmation-code">
+                {codigo.map((digito, index) => (
+                  <input
+                    key={index}
+                    ref={(elemento) => {
+                      camposCodigoRef.current[index] = elemento;
+                    }}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={1}
+                    autoComplete={index === 0 ? "one-time-code" : "off"}
+                    autoFocus={index === 0}
+                    aria-label={`Dígito ${index + 1} do código`}
+                    value={digito}
+                    onChange={(event) =>
+                      atualizarDigito(index, event.target.value)
+                    }
+                    onKeyDown={(event) => tratarBackspace(event, index)}
+                    onPaste={colarCodigo}
+                    required
+                  />
+                ))}
+              </div>
+
+              {erroRecuperacao && (
+                <p className="recovery-error" role="alert">
+                  {erroRecuperacao}
+                </p>
+              )}
+
+              <button type="submit" disabled={carregandoRecuperacao}>
+                {carregandoRecuperacao ? "Verificando..." : "Verificar"}
+              </button>
+            </form>
+
+            <button
+              type="button"
+              className="resend-code"
+              onClick={reenviarCodigo}
+              disabled={reenviandoCodigo}
             >
-            <div className="confirmation-code">
-              {codigo.map((digito, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  maxLength={1}
-                  aria-label={`Dígito ${index + 1} do código`}
-                  value={digito}
-                  onChange={(event) => {
-                    const valor = event.target.value.replace(/\D/g, "");
-                    setCodigo((anterior) =>
-                      anterior.map((item, i) =>
-                        i === index ? valor.slice(-1) : item
-                      )
-                    );
-                  }}
-                  required
-                />
-              ))}
-            </div>
+              {reenviandoCodigo ? "Enviando..." : "Reenviar código"}
+            </button>
+            {mensagemReenvio && (
+              <p className="recovery-success" role="status">
+                {mensagemReenvio}
+              </p>
+            )}
+          </section>
+        </div>
+      )}
 
-            <button type="submit">Verificar</button>
-          </form>
-
-          <button
-            type="button"
-            className="resend-code"
-            onClick={() => {
-              setCodigo(["", "", "", ""]);
-              console.log("Solicitar reenvio do código");
-            }}
+      {modalNovaSenhaAberta && (
+        <div
+          className="modal-overlay"
+          onClick={() => setModalNovaSenhaAberta(false)}
+        >
+          <section
+            className="recovery-modal new-password-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="new-password-title"
+            onClick={(event) => event.stopPropagation()}
           >
-            Reenviar código
-          </button>
-        </section>
-      </div>
-    )}
+            <h2 id="new-password-title">Crie uma nova senha</h2>
 
-    
-{modalNovaSenhaAberta && (
-  <div
-    className="modal-overlay"
-    onClick={() => setModalNovaSenhaAberta(false)}
-  >
-    <section
-      className="recovery-modal new-password-modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="new-password-title"
-      onClick={(event) => event.stopPropagation()}
-    >
-      <h2 id="new-password-title">Crie uma nova senha</h2>
+            <form onSubmit={alterarSenha}>
+              <input
+                type="password"
+                placeholder="Nova senha"
+                value={novaSenha}
+                onChange={(event) => setNovaSenha(event.target.value)}
+                minLength={8}
+                required
+              />
 
-      
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
+              <input
+                type="password"
+                placeholder="Confirmar senha"
+                value={confirmarNovaSenha}
+                onChange={(event) => setConfirmarNovaSenha(event.target.value)}
+                minLength={8}
+                required
+              />
 
-              setModalNovaSenhaAberta(false);
-              setNovaSenha("");
-              setConfirmarNovaSenha("");
+              {erroRecuperacao && (
+                <p className="recovery-error" role="alert">
+                  {erroRecuperacao}
+                </p>
+              )}
 
-              alert("Senha alterada com sucesso!");
-            }}
-          >
-
-        <input
-          type="password"
-          placeholder="Nova senha"
-          value={novaSenha}
-          onChange={(event) => setNovaSenha(event.target.value)}
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Confirmar senha"
-          value={confirmarNovaSenha}
-          onChange={(event) =>
-            setConfirmarNovaSenha(event.target.value)
-          }
-          required
-        />
-
-        <button type="submit">Alterar senha</button>
-      </form>
-    </section>
-  </div>
-)}
-
-
+              <button type="submit" disabled={carregandoRecuperacao}>
+                {carregandoRecuperacao ? "Alterando..." : "Alterar senha"}
+              </button>
+            </form>
+          </section>
+        </div>
+      )}
     </main>
   );
 }
