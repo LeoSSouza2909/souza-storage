@@ -245,12 +245,6 @@ async function gerarPdfPedido(caminho, numeroPedido, produtos, empresa) {
         .fillColor("#222222")
         .text(`${indice + 1}. ${produto.produto}`);
 
-      documento
-        .font("Helvetica")
-        .fontSize(10)
-        .fillColor("#666666")
-        .text(`Marca: ${produto.marca || "Não informada"}`);
-
       documento.moveDown(0.8);
     });
 

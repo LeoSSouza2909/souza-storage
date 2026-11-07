@@ -1576,3 +1576,32 @@
     font-size: 11px;
   }
 }
+
+/* BOTÕES DA MODAL DE EDIÇÃO */
+
+.editar-modal-acoes {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.editar-excluir-button {
+  min-width: 76px;
+  height: 25px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 15px;
+  background: #dc3545;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.editar-excluir-button:hover {
+  background: #bd2635;
+}
+
+.editar-excluir-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -13,6 +13,7 @@ export default function Editar() {
   const [nome, setNome] = useState("");
   const [marca, setMarca] = useState("");
   const [imagem, setImagem] = useState("");
+  const [excluindo, setExcluindo] = useState(false);
 
   const [carregandoPecas, setCarregandoPecas] = useState(true);
   const [salvando, setSalvando] = useState(false);
@@ -247,6 +248,34 @@ export default function Editar() {
     }
   }
 
+  // EXCLUIR PRODUTO
+  async function excluirPeca() {
+    if (!pecaEditando) return;
+
+    const confirmar = window.confirm(
+      `Tem certeza que deseja excluir o produto "${pecaEditando.nome}"?`,
+    );
+
+    if (!confirmar) return;
+
+    try {
+      setExcluindo(true);
+      setErroFormulario("");
+
+      await requisicaoApi(`/api/produtos/${pecaEditando.id}`, {
+        method: "DELETE",
+      });
+
+      await carregarPecas();
+
+      fecharModal();
+    } catch (erro) {
+      setErroFormulario(erro.message || "Não foi possível excluir o produto.");
+    } finally {
+      setExcluindo(false);
+    }
+  }
+
   return (
     <Layout titulo="EDITAR">
       <div className="reposicao-toolbar editar-toolbar">
@@ -419,17 +448,30 @@ export default function Editar() {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="editar-salvar-button"
-                disabled={salvando}
-              >
-                {salvando
-                  ? "Salvando..."
-                  : pecaEditando
-                    ? "Salvar"
-                    : "Adicionar"}
-              </button>
+              <div className="editar-modal-acoes">
+                {pecaEditando && (
+                  <button
+                    type="button"
+                    className="editar-excluir-button"
+                    onClick={excluirPeca}
+                    disabled={excluindo || salvando}
+                  >
+                    {excluindo ? "Excluindo..." : "Excluir"}
+                  </button>
+                )}
+
+                <button
+                  type="submit"
+                  className="editar-salvar-button"
+                  disabled={salvando || excluindo}
+                >
+                  {salvando
+                    ? "Salvando..."
+                    : pecaEditando
+                      ? "Salvar"
+                      : "Adicionar"}
+                </button>
+              </div>
             </div>
           </form>
         </div>
