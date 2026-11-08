@@ -36,6 +36,16 @@ export default function Layout({ titulo, children, pecas = [] }) {
 
   const navigate = useNavigate();
 
+  function obterUrlLogo(endereco) {
+    if (!endereco) return "";
+
+    if (endereco.startsWith("http://") || endereco.startsWith("https://")) {
+      return endereco;
+    }
+
+    return `${API_URL}${endereco}`;
+  }
+
   async function abrirInformacoesConta() {
     setMenuContaAberto(false);
     setModalContaAberta(true);
@@ -55,7 +65,7 @@ export default function Layout({ titulo, children, pecas = [] }) {
         logo: usuario.logo || null,
       });
 
-      setLogoPreview(usuario.logo ? `${API_URL}${usuario.logo}` : "");
+      setLogoPreview(obterUrlLogo(usuario.logo));
     } catch (erro) {
       setErroConta(erro.message);
     } finally {
@@ -132,7 +142,7 @@ export default function Layout({ titulo, children, pecas = [] }) {
 
       setLogoArquivo(null);
 
-      setLogoPreview(usuario.logo ? `${API_URL}${usuario.logo}` : "");
+      setLogoPreview(obterUrlLogo(usuario.logo));
 
       setMensagemConta(dados.mensagem);
     } catch (erro) {

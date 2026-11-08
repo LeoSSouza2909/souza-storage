@@ -28,12 +28,19 @@ export default function OrcamentosModal({ onClose }) {
   }, []);
 
   function obterUrlPdf(caminho) {
-    const baseUrl = API_URL.replace(/\/$/, "");
+    if (!caminho) return "";
+
+    // Se já for uma URL completa, utiliza diretamente.
+    if (caminho.startsWith("http://") || caminho.startsWith("https://")) {
+      return caminho;
+    }
+
+    // Compatibilidade com PDFs antigos armazenados no servidor.
+    const baseUrl = API_URL.replace(/\/+$/, "");
     const caminhoPdf = caminho.startsWith("/") ? caminho : `/${caminho}`;
 
     return `${baseUrl}${caminhoPdf}`;
   }
-
   function formatarData(data) {
     if (!data) return "Data não disponível";
 

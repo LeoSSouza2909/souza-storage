@@ -13,39 +13,17 @@ const path = require("path");
 const multer = require("multer");
 const ExcelJS = require("exceljs");
 const { Readable } = require("stream");
+const cloudinary = require("./config/cloudinary");
 
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "8mb" }));
 app.use("/arquivos", express.static(path.join(__dirname, "arquivos")));
 
 // CONFIGURAÇÃO DO UPLOAD DA LOGO DA EMPRESA
 
-const armazenamentoLogo = multer.diskStorage({
-  destination: (req, file, callback) => {
-    const pasta = path.join(__dirname, "arquivos", "logos");
-
-    fs.mkdir(pasta, { recursive: true }, (erro) => {
-      callback(erro, pasta);
-    });
-  },
-
-  filename: (req, file, callback) => {
-    const extensoes = {
-      "image/jpeg": ".jpg",
-      "image/png": ".png",
-      "image/webp": ".webp",
-    };
-
-    const extensao = extensoes[file.mimetype];
-
-    callback(
-      null,
-      `logo-${req.usuarioId}-${crypto.randomBytes(8).toString("hex")}${extensao}`,
-    );
-  },
-});
+const armazenamentoLogo = multer.memoryStorage();
 
 const uploadLogo = multer({
   storage: armazenamentoLogo,
@@ -134,11 +112,56 @@ app.get("/api/teste-banco", async (req, res) => {
   }
 });
 
-async function gerarPdfPedido(caminho, numeroPedido, produtos, empresa) {
-  await fs.promises.mkdir(path.dirname(caminho), {
-    recursive: true,
-  });
+async function gerarPdfPedido(numeroPedido, produtos, empresa) {
+  // Buscar a logo da empresa no Cloudinary ou no armazenamento antigo
+  let logoEmpresaBuffer = null;
 
+  if (empresa.logo) {
+    try {
+      if (empresa.logo.startsWith("https://")) {
+        const resposta = await fetch(empresa.logo);
+
+        if (resposta.ok) {
+          const tipo = resposta.headers.get("content-type") || "";
+
+          if (tipo.startsWith("image/")) {
+            logoEmpresaBuffer = Buffer.from(await resposta.arrayBuffer());
+          }
+        }
+      } else {
+        // Compatibilidade com logos antigas armazenadas localmente
+        const caminhoLogo = path.join(
+          __dirname,
+          empresa.logo.replace(/^\/+/, ""),
+        );
+
+        if (fs.existsSync(caminhoLogo)) {
+          const extensao = path.extname(caminhoLogo).toLowerCase();
+
+          if ([".png", ".jpg", ".jpeg"].includes(extensao)) {
+            logoEmpresaBuffer = await fs.promises.readFile(caminhoLogo);
+          }
+        }
+      }
+    } catch (erroLogo) {
+      console.error("Não foi possível carregar a logo da empresa:", erroLogo);
+    }
+  }
+
+  // Logo original do Souza Storage
+  const logoOriginal = path.join(
+    __dirname,
+    "arquivos",
+    "logo-souza-storage.png",
+  );
+
+  let logoOriginalBuffer = null;
+
+  if (fs.existsSync(logoOriginal)) {
+    logoOriginalBuffer = await fs.promises.readFile(logoOriginal);
+  }
+
+  // Gerar PDF diretamente na memória
   return new Promise((resolve, reject) => {
     const documento = new PDFDocument({
       size: "A4",
@@ -150,39 +173,23 @@ async function gerarPdfPedido(caminho, numeroPedido, produtos, empresa) {
       },
     });
 
-    const arquivo = fs.createWriteStream(caminho);
+    const partesPdf = [];
 
-    documento.pipe(arquivo);
+    documento.on("data", (parte) => {
+      partesPdf.push(parte);
+    });
 
-    arquivo.on("finish", resolve);
-    arquivo.on("error", reject);
+    documento.on("end", () => {
+      resolve(Buffer.concat(partesPdf));
+    });
+
     documento.on("error", reject);
-
-    const logoOriginal = path.join(
-      __dirname,
-      "arquivos",
-      "logo-souza-storage.png",
-    );
-
-    // Localizar a logo cadastrada pela empresa.
-    const caminhoLogoEmpresa = empresa.logo
-      ? path.join(__dirname, empresa.logo.replace(/^\/+/, ""))
-      : null;
-
-    const extensaoLogo = caminhoLogoEmpresa
-      ? path.extname(caminhoLogoEmpresa).toLowerCase()
-      : "";
-
-    const logoEmpresaValida =
-      caminhoLogoEmpresa &&
-      fs.existsSync(caminhoLogoEmpresa) &&
-      [".png", ".jpg", ".jpeg"].includes(extensaoLogo);
 
     documento.font("Helvetica");
 
-    // CABEÇALHO: logo da empresa ou nome da empresa.
-    if (logoEmpresaValida) {
-      documento.image(caminhoLogoEmpresa, 210, 40, {
+    // CABEÇALHO: logo da empresa ou nome da empresa
+    if (logoEmpresaBuffer) {
+      documento.image(logoEmpresaBuffer, 210, 40, {
         fit: [175, 65],
         align: "center",
         valign: "center",
@@ -228,7 +235,6 @@ async function gerarPdfPedido(caminho, numeroPedido, produtos, empresa) {
 
     documento.moveDown();
 
-    // Título solicitado.
     documento
       .font("Helvetica-Bold")
       .fontSize(11)
@@ -253,7 +259,7 @@ async function gerarPdfPedido(caminho, numeroPedido, produtos, empresa) {
 
     documento.moveDown(2);
 
-    // RODAPÉ: identificação do sistema e sua logo original.
+    // RODAPÉ: identificação do sistema e sua logo original
     documento
       .font("Helvetica")
       .fontSize(9)
@@ -262,10 +268,10 @@ async function gerarPdfPedido(caminho, numeroPedido, produtos, empresa) {
         align: "center",
       });
 
-    if (fs.existsSync(logoOriginal)) {
+    if (logoOriginalBuffer) {
       documento.moveDown(0.5);
 
-      documento.image(logoOriginal, 247, documento.y, {
+      documento.image(logoOriginalBuffer, 247, documento.y, {
         fit: [100, 45],
         align: "center",
         valign: "center",
@@ -400,8 +406,8 @@ app.post("/api/pedidos", autenticar, async (req, res) => {
   }
 
   let conexaoPedido;
-  let caminhoPdf;
   let transacaoIniciada = false;
+  let pdfPublicId = null;
 
   try {
     conexaoPedido = await conexao.getConnection();
@@ -409,8 +415,7 @@ app.post("/api/pedidos", autenticar, async (req, res) => {
     await conexaoPedido.beginTransaction();
     transacaoIniciada = true;
 
-    // Buscar os dados da empresa e bloquear sua linha
-    // para evitar que dois pedidos recebam o mesmo número.
+    // Buscar os dados da empresa e bloquear sua linha.
     const [empresas] = await conexaoPedido.execute(
       `SELECT id, nome, logo
        FROM usuario
@@ -425,7 +430,7 @@ app.post("/api/pedidos", autenticar, async (req, res) => {
 
     const empresa = empresas[0];
 
-    // Descobrir o próximo número de pedido desta empresa.
+    // Descobrir o próximo número de pedido.
     const [numeros] = await conexaoPedido.execute(
       `SELECT COALESCE(MAX(CAST(numero AS UNSIGNED)), 0) + 1 AS proximo
        FROM pedidos
@@ -451,22 +456,44 @@ app.post("/api/pedidos", autenticar, async (req, res) => {
       throw new Error("Uma ou mais peças não estão disponíveis para pedido.");
     }
 
+    // Gerar PDF em memória.
+    const pdfBuffer = await gerarPdfPedido(numeroPedido, produtos, empresa);
+
     const nomeArquivo = `pedido-${req.usuarioId}-${Date.now()}.pdf`;
 
-    caminhoPdf = path.join(__dirname, "arquivos", "pedidos", nomeArquivo);
+    // Enviar PDF para o Cloudinary.
+    const uploadPdf = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: `souza-storage/pedidos/${req.usuarioId}`,
+          public_id: nomeArquivo,
+          resource_type: "raw",
+        },
+        (erro, resultado) => {
+          if (erro) {
+            return reject(erro);
+          }
 
-    // Gerar o PDF com os dados da empresa.
-    await gerarPdfPedido(caminhoPdf, numeroPedido, produtos, empresa);
+          resolve(resultado);
+        },
+      );
 
-    const arquivoRelativo = `/arquivos/pedidos/${nomeArquivo}`;
+      stream.end(pdfBuffer);
+    });
 
+    pdfPublicId = uploadPdf.public_id;
+
+    const arquivoPdf = uploadPdf.secure_url;
+
+    // Registrar pedido com o endereço do PDF na nuvem.
     const [pedido] = await conexaoPedido.execute(
       `INSERT INTO pedidos
        (usuario_id, numero, arquivo_pdf)
        VALUES (?, ?, ?)`,
-      [req.usuarioId, numeroPedido, arquivoRelativo],
+      [req.usuarioId, numeroPedido, arquivoPdf],
     );
 
+    // Registrar somente os produtos selecionados.
     for (const produto of produtos) {
       await conexaoPedido.execute(
         `INSERT INTO pedido_produtos
@@ -496,15 +523,22 @@ app.post("/api/pedidos", autenticar, async (req, res) => {
     return res.status(201).json({
       mensagem: "Pedido criado com sucesso!",
       numero: numeroPedido,
-      url: `${req.protocol}://${req.get("host")}${arquivoRelativo}`,
+      url: arquivoPdf,
     });
   } catch (erro) {
     if (transacaoIniciada && conexaoPedido) {
       await conexaoPedido.rollback();
     }
 
-    if (caminhoPdf) {
-      await fs.promises.unlink(caminhoPdf).catch(() => {});
+    // Remover PDF da nuvem se o pedido não for concluído.
+    if (pdfPublicId) {
+      try {
+        await cloudinary.uploader.destroy(pdfPublicId, {
+          resource_type: "raw",
+        });
+      } catch (erroCloudinary) {
+        console.error("Erro ao remover PDF do Cloudinary:", erroCloudinary);
+      }
     }
 
     console.error("Erro ao criar pedido:", erro);
@@ -877,6 +911,7 @@ app.get("/api/conta", autenticar, async (req, res) => {
 });
 
 // ATUALIZAR INFORMAÇÕES DA CONTA
+
 app.put(
   "/api/conta",
   autenticar,
@@ -895,6 +930,8 @@ app.put(
     });
   },
   async (req, res) => {
+    let logoPublicId = null;
+
     try {
       const nome = String(req.body.nome || "").trim();
       const email = String(req.body.email || "")
@@ -904,40 +941,24 @@ app.put(
       const cnpj = String(req.body.cnpj || "").replace(/\D/g, "");
 
       if (!nome || !email || !cnpj) {
-        if (req.file) {
-          await fs.promises.unlink(req.file.path).catch(() => {});
-        }
-
         return res.status(400).json({
           mensagem: "Preencha todos os campos.",
         });
       }
 
       if (nome.length > 150 || email.length > 150) {
-        if (req.file) {
-          await fs.promises.unlink(req.file.path).catch(() => {});
-        }
-
         return res.status(400).json({
           mensagem: "Um dos campos ultrapassou o limite de caracteres.",
         });
       }
 
       if (!email.includes("@")) {
-        if (req.file) {
-          await fs.promises.unlink(req.file.path).catch(() => {});
-        }
-
         return res.status(400).json({
           mensagem: "Informe um e-mail válido.",
         });
       }
 
       if (cnpj.length !== 14) {
-        if (req.file) {
-          await fs.promises.unlink(req.file.path).catch(() => {});
-        }
-
         return res.status(400).json({
           mensagem: "O CNPJ deve conter 14 números.",
         });
@@ -949,10 +970,6 @@ app.put(
       );
 
       if (usuarios.length === 0) {
-        if (req.file) {
-          await fs.promises.unlink(req.file.path).catch(() => {});
-        }
-
         return res.status(404).json({
           mensagem: "Conta não encontrada.",
         });
@@ -966,10 +983,6 @@ app.put(
       );
 
       if (duplicados.length > 0) {
-        if (req.file) {
-          await fs.promises.unlink(req.file.path).catch(() => {});
-        }
-
         return res.status(409).json({
           mensagem: "Este e-mail ou CNPJ já pertence a outra conta.",
         });
@@ -978,13 +991,23 @@ app.put(
       let resultado;
 
       if (req.file) {
-        const caminhoLogo = `/arquivos/logos/${req.file.filename}`;
+        // Enviar a logo para o Cloudinary
+        const upload = await cloudinary.uploader.upload(
+          `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+          {
+            folder: `souza-storage/logos/${req.usuarioId}`,
+            resource_type: "image",
+          },
+        );
 
+        logoPublicId = upload.public_id;
+
+        // Salvar o endereço da logo no banco
         [resultado] = await conexao.execute(
           `UPDATE usuario
            SET nome = ?, cnpj = ?, email = ?, logo = ?
            WHERE id = ?`,
-          [nome, cnpj, email, caminhoLogo, req.usuarioId],
+          [nome, cnpj, email, upload.secure_url, req.usuarioId],
         );
       } else {
         [resultado] = await conexao.execute(
@@ -993,16 +1016,6 @@ app.put(
            WHERE id = ?`,
           [nome, cnpj, email, req.usuarioId],
         );
-      }
-
-      if (resultado.affectedRows === 0) {
-        if (req.file) {
-          await fs.promises.unlink(req.file.path).catch(() => {});
-        }
-
-        return res.status(404).json({
-          mensagem: "Não foi possível atualizar a conta.",
-        });
       }
 
       const [contasAtualizadas] = await conexao.execute(
@@ -1017,8 +1030,13 @@ app.put(
         usuario: contasAtualizadas[0],
       });
     } catch (erro) {
-      if (req.file) {
-        await fs.promises.unlink(req.file.path).catch(() => {});
+      // Remover a nova logo se a atualização falhar
+      if (logoPublicId) {
+        try {
+          await cloudinary.uploader.destroy(logoPublicId);
+        } catch (erroCloudinary) {
+          console.error("Erro ao remover logo do Cloudinary:", erroCloudinary);
+        }
       }
 
       console.error("Erro ao atualizar conta:", erro);
@@ -1528,9 +1546,11 @@ app.get("/api/produtos", autenticar, async (req, res) => {
 });
 
 // CADASTRAR PRODUTO
+
 app.post("/api/produtos", autenticar, async (req, res) => {
   let conexaoProduto;
   let transacaoIniciada = false;
+  let imagemPublicId = null;
 
   try {
     const { produto, marca, imagem } = req.body;
@@ -1557,13 +1577,34 @@ app.post("/api/produtos", autenticar, async (req, res) => {
       });
     }
 
-    const imagemLimpa =
+    let imagemLimpa =
       typeof imagem === "string" && imagem.trim() ? imagem.trim() : null;
 
     if (produtoLimpo.length > 255 || marcaLimpa.length > 150) {
       return res.status(400).json({
         mensagem: "O nome ou a marca ultrapassou o limite de caracteres.",
       });
+    }
+
+    // Enviar imagem Base64 para o Cloudinary
+    if (imagemLimpa && imagemLimpa.startsWith("data:image/")) {
+      const formatoValido = /^data:image\/(png|jpeg|jpg|webp);base64,/i.test(
+        imagemLimpa,
+      );
+
+      if (!formatoValido) {
+        return res.status(400).json({
+          mensagem: "Formato de imagem inválido. Utilize PNG, JPG ou WEBP.",
+        });
+      }
+
+      const upload = await cloudinary.uploader.upload(imagemLimpa, {
+        folder: `souza-storage/produtos/${req.usuarioId}`,
+        resource_type: "image",
+      });
+
+      imagemLimpa = upload.secure_url;
+      imagemPublicId = upload.public_id;
     }
 
     conexaoProduto = await conexao.getConnection();
@@ -1612,6 +1653,15 @@ app.post("/api/produtos", autenticar, async (req, res) => {
       await conexaoProduto.rollback();
     }
 
+    // Remover imagem da nuvem caso o cadastro não seja concluído
+    if (imagemPublicId) {
+      try {
+        await cloudinary.uploader.destroy(imagemPublicId);
+      } catch (erroCloudinary) {
+        console.error("Erro ao remover imagem do Cloudinary:", erroCloudinary);
+      }
+    }
+
     console.error("Erro ao cadastrar produto:", erro);
 
     return res.status(500).json({
@@ -1625,9 +1675,11 @@ app.post("/api/produtos", autenticar, async (req, res) => {
 });
 
 // EDITAR PRODUTO
+
 app.put("/api/produtos/:id", autenticar, async (req, res) => {
   let conexaoProduto;
   let transacaoIniciada = false;
+  let imagemPublicId = null;
 
   try {
     const id = Number(req.params.id);
@@ -1639,7 +1691,6 @@ app.put("/api/produtos/:id", autenticar, async (req, res) => {
       });
     }
 
-    // Validar os campos obrigatórios
     if (
       typeof produto !== "string" ||
       typeof marca !== "string" ||
@@ -1666,23 +1717,20 @@ app.put("/api/produtos/:id", autenticar, async (req, res) => {
       });
     }
 
-    const imagemLimpa =
-      typeof imagem === "string" && imagem.trim() ? imagem.trim() : null;
-
     conexaoProduto = await conexao.getConnection();
 
     await conexaoProduto.beginTransaction();
     transacaoIniciada = true;
 
-    // Atualizar produto
-    const [resultado] = await conexaoProduto.execute(
-      `UPDATE produtos
-       SET produto = ?, marca = ?, imagem = ?
-       WHERE id = ? AND usuario_id = ? AND status <> 2`,
-      [produtoLimpo, marcaLimpa, imagemLimpa, id, req.usuarioId],
+    // Verificar se o produto pertence ao usuário
+    const [produtos] = await conexaoProduto.execute(
+      `SELECT imagem FROM produtos
+       WHERE id = ? AND usuario_id = ? AND status <> 2
+       FOR UPDATE`,
+      [id, req.usuarioId],
     );
 
-    if (resultado.affectedRows === 0) {
+    if (produtos.length === 0) {
       await conexaoProduto.rollback();
       transacaoIniciada = false;
 
@@ -1690,6 +1738,45 @@ app.put("/api/produtos/:id", autenticar, async (req, res) => {
         mensagem: "Produto não encontrado.",
       });
     }
+
+    // Preservar a imagem atual caso nenhuma nova seja enviada
+    let imagemLimpa = produtos[0].imagem || null;
+
+    if (typeof imagem === "string" && imagem.trim()) {
+      imagemLimpa = imagem.trim();
+
+      // Enviar nova imagem Base64 para o Cloudinary
+      if (imagemLimpa.startsWith("data:image/")) {
+        const formatoValido = /^data:image\/(png|jpeg|jpg|webp);base64,/i.test(
+          imagemLimpa,
+        );
+
+        if (!formatoValido) {
+          await conexaoProduto.rollback();
+          transacaoIniciada = false;
+
+          return res.status(400).json({
+            mensagem: "Formato de imagem inválido. Utilize PNG, JPG ou WEBP.",
+          });
+        }
+
+        const upload = await cloudinary.uploader.upload(imagemLimpa, {
+          folder: `souza-storage/produtos/${req.usuarioId}`,
+          resource_type: "image",
+        });
+
+        imagemLimpa = upload.secure_url;
+        imagemPublicId = upload.public_id;
+      }
+    }
+
+    // Atualizar produto
+    await conexaoProduto.execute(
+      `UPDATE produtos
+       SET produto = ?, marca = ?, imagem = ?
+       WHERE id = ? AND usuario_id = ? AND status <> 2`,
+      [produtoLimpo, marcaLimpa, imagemLimpa, id, req.usuarioId],
+    );
 
     // Registrar notificação
     await conexaoProduto.execute(
@@ -1714,6 +1801,15 @@ app.put("/api/produtos/:id", autenticar, async (req, res) => {
   } catch (erro) {
     if (transacaoIniciada && conexaoProduto) {
       await conexaoProduto.rollback();
+    }
+
+    // Remover nova imagem caso a edição não seja concluída
+    if (imagemPublicId) {
+      try {
+        await cloudinary.uploader.destroy(imagemPublicId);
+      } catch (erroCloudinary) {
+        console.error("Erro ao remover imagem do Cloudinary:", erroCloudinary);
+      }
     }
 
     console.error("Erro ao editar produto:", erro);
