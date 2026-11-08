@@ -30,17 +30,18 @@ export default function OrcamentosModal({ onClose }) {
   function obterUrlPdf(caminho) {
     if (!caminho) return "";
 
-    // Se já for uma URL completa, utiliza diretamente.
-    if (caminho.startsWith("http://") || caminho.startsWith("https://")) {
+    // Links do Cloudinary ou outras URLs completas.
+    if (/^https?:\/\//i.test(caminho)) {
       return caminho;
     }
 
-    // Compatibilidade com PDFs antigos armazenados no servidor.
+    // Compatibilidade com PDFs antigos no servidor.
     const baseUrl = API_URL.replace(/\/+$/, "");
     const caminhoPdf = caminho.startsWith("/") ? caminho : `/${caminho}`;
 
     return `${baseUrl}${caminhoPdf}`;
   }
+
   function formatarData(data) {
     if (!data) return "Data não disponível";
 
