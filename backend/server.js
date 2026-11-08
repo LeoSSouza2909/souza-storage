@@ -17,7 +17,11 @@ const cloudinary = require("./config/cloudinary");
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://souza-storage.pages.dev", "http://localhost:5173"],
+  }),
+);
 app.use(express.json({ limit: "8mb" }));
 app.use("/arquivos", express.static(path.join(__dirname, "arquivos")));
 
