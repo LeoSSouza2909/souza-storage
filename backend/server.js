@@ -322,6 +322,12 @@ async function gerarPdfPedido(numeroPedido, produtos, empresa) {
         .fillColor("#222222")
         .text(`${indice + 1}. ${produto.produto}`);
 
+      documento
+        .font("Helvetica")
+        .fontSize(10)
+        .fillColor("#555555")
+        .text(`Quantidade: ${Number(produto.quantidade) || 1}`);
+
       documento.moveDown(0.8);
     });
 
@@ -451,26 +457,50 @@ app.post("/api/auth/cadastro", async (req, res) => {
 });
 
 app.post("/api/pedidos", autenticar, async (req, res) => {
-  const { ids } = req.body;
+  const { produtos: itens } = req.body;
 
-  if (
-    !Array.isArray(ids) ||
-    ids.length === 0 ||
-    ids.length > 200 ||
-    !ids.every((id) => Number.isInteger(Number(id)) && Number(id) > 0)
-  ) {
+  // Validar os produtos e suas quantidades.
+  if (!Array.isArray(itens) || itens.length === 0 || itens.length > 200) {
     return res.status(400).json({
       mensagem: "Selecione pelo menos uma peça válida.",
     });
   }
 
-  const idsUnicos = [...new Set(ids.map(Number))];
+  const produtosInvalidos = itens.some((item) => {
+    const id = Number(item?.id);
+    const quantidade = Number(item?.quantidade);
 
-  if (idsUnicos.length !== ids.length) {
+    return (
+      !Number.isSafeInteger(id) ||
+      id <= 0 ||
+      !Number.isSafeInteger(quantidade) ||
+      quantidade < 1 ||
+      quantidade > 100000
+    );
+  });
+
+  if (produtosInvalidos) {
+    return res.status(400).json({
+      mensagem: "Informe peças e quantidades válidas.",
+    });
+  }
+
+  const itensNormalizados = itens.map((item) => ({
+    id: Number(item.id),
+    quantidade: Number(item.quantidade),
+  }));
+
+  const idsUnicos = itensNormalizados.map((item) => item.id);
+
+  if (new Set(idsUnicos).size !== idsUnicos.length) {
     return res.status(400).json({
       mensagem: "Existem peças repetidas na seleção.",
     });
   }
+
+  const quantidadesPorId = new Map(
+    itensNormalizados.map((item) => [item.id, item.quantidade]),
+  );
 
   let conexaoPedido;
   let transacaoIniciada = false;
@@ -509,7 +539,8 @@ app.post("/api/pedidos", autenticar, async (req, res) => {
 
     const placeholders = idsUnicos.map(() => "?").join(",");
 
-    const [produtos] = await conexaoPedido.execute(
+    // Buscar somente produtos disponíveis pertencentes ao usuário.
+    const [produtosEncontrados] = await conexaoPedido.execute(
       `SELECT id, produto, marca
        FROM produtos
        WHERE usuario_id = ?
@@ -519,11 +550,17 @@ app.post("/api/pedidos", autenticar, async (req, res) => {
       [req.usuarioId, ...idsUnicos],
     );
 
-    if (produtos.length !== idsUnicos.length) {
+    if (produtosEncontrados.length !== idsUnicos.length) {
       throw new Error("Uma ou mais peças não estão disponíveis para pedido.");
     }
 
-    // Gerar PDF em memória.
+    // Associar a quantidade informada a cada produto.
+    const produtos = produtosEncontrados.map((produto) => ({
+      ...produto,
+      quantidade: quantidadesPorId.get(Number(produto.id)),
+    }));
+
+    // Gerar PDF com as quantidades.
     const pdfBuffer = await gerarPdfPedido(numeroPedido, produtos, empresa);
 
     const nomeArquivo = `pedido-${req.usuarioId}-${Date.now()}.pdf`;
@@ -552,7 +589,7 @@ app.post("/api/pedidos", autenticar, async (req, res) => {
 
     const arquivoPdf = uploadPdf.secure_url;
 
-    // Registrar pedido com o endereço do PDF na nuvem.
+    // Registrar o pedido.
     const [pedido] = await conexaoPedido.execute(
       `INSERT INTO pedidos
        (usuario_id, numero, arquivo_pdf)
@@ -560,13 +597,19 @@ app.post("/api/pedidos", autenticar, async (req, res) => {
       [req.usuarioId, numeroPedido, arquivoPdf],
     );
 
-    // Registrar somente os produtos selecionados.
+    // Registrar cada produto com sua respectiva quantidade.
     for (const produto of produtos) {
       await conexaoPedido.execute(
         `INSERT INTO pedido_produtos
-         (pedido_id, produto_id, nome_produto, marca)
-         VALUES (?, ?, ?, ?)`,
-        [pedido.insertId, produto.id, produto.produto, produto.marca],
+         (pedido_id, produto_id, nome_produto, marca, quantidade)
+         VALUES (?, ?, ?, ?, ?)`,
+        [
+          pedido.insertId,
+          produto.id,
+          produto.produto,
+          produto.marca,
+          produto.quantidade,
+        ],
       );
     }
 
