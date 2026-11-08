@@ -13,6 +13,7 @@ const multer = require("multer");
 const ExcelJS = require("exceljs");
 const { Readable } = require("stream");
 const cloudinary = require("./config/cloudinary");
+const { google } = require("googleapis");
 
 const app = express();
 
@@ -106,29 +107,77 @@ app.get("/api/teste-banco", async (req, res) => {
   }
 });
 
+const oauth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+);
+
+oauth2Client.setCredentials({
+  refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+});
+
 async function enviarEmail({ to, subject, text, html }) {
-  const resposta = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: "Souza Storage <onboarding@resend.dev>",
-      to: [to],
-      subject,
-      text,
-      html,
-    }),
-  });
-
-  const resultado = await resposta.json();
-
-  if (!resposta.ok) {
-    throw new Error(resultado.message || "Não foi possível enviar o e-mail.");
+  if (
+    !process.env.GOOGLE_CLIENT_ID ||
+    !process.env.GOOGLE_CLIENT_SECRET ||
+    !process.env.GOOGLE_REFRESH_TOKEN ||
+    !process.env.GMAIL_USER
+  ) {
+    throw new Error("Configurações do Gmail não encontradas.");
   }
 
-  return resultado;
+  const gmail = google.gmail({
+    version: "v1",
+    auth: oauth2Client,
+  });
+
+  const boundary = `souza_storage_${crypto.randomBytes(16).toString("hex")}`;
+
+  function codificarBase64(conteudo) {
+    return Buffer.from(conteudo || "", "utf8")
+      .toString("base64")
+      .match(/.{1,76}/g)
+      .join("\r\n");
+  }
+
+  const assuntoCodificado = `=?UTF-8?B?${Buffer.from(subject, "utf8").toString("base64")}?=`;
+
+  const mensagem = [
+    `From: Souza Storage <${process.env.GMAIL_USER}>`,
+    `To: ${to}`,
+    `Subject: ${assuntoCodificado}`,
+    "MIME-Version: 1.0",
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    "",
+    `--${boundary}`,
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: base64",
+    "",
+    codificarBase64(text),
+    "",
+    `--${boundary}`,
+    "Content-Type: text/html; charset=UTF-8",
+    "Content-Transfer-Encoding: base64",
+    "",
+    codificarBase64(html),
+    "",
+    `--${boundary}--`,
+  ].join("\r\n");
+
+  const raw = Buffer.from(mensagem)
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+
+  const resposta = await gmail.users.messages.send({
+    userId: "me",
+    requestBody: {
+      raw,
+    },
+  });
+
+  return resposta.data;
 }
 
 async function gerarPdfPedido(numeroPedido, produtos, empresa) {
