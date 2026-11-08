@@ -3,6 +3,7 @@ import "./CriarConta.css";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import { requisicaoApi } from "../services/api";
+import { useNotification } from "../components/NotificationContext";
 
 function FieldIcon({ type }) {
   const common = {
@@ -78,6 +79,7 @@ function CriarConta() {
   const camposCodigoRef = useRef([]);
 
   const navigate = useNavigate();
+  const { notificar } = useNotification();
 
   function atualizarDigito(index, valor) {
     const numeros = valor.replace(/\D/g, "");
@@ -213,7 +215,9 @@ function CriarConta() {
       });
 
       setModalConfirmacaoAberta(false);
-      alert(resposta.mensagem || "Conta criada com sucesso!");
+
+      notificar("sucesso", resposta.mensagem || "Conta criada com sucesso!");
+
       navigate("/");
     } catch (erro) {
       setErroConfirmacao(

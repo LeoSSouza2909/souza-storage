@@ -10,6 +10,15 @@ export default function Reposicao() {
   const [carregando, setCarregando] = useState(true);
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState("");
+  const [notificacao, setNotificacao] = useState(null);
+
+  function exibirNotificacao(tipo, mensagem) {
+    setNotificacao({
+      tipo,
+      mensagem,
+      id: Date.now(),
+    });
+  }
 
   async function carregarPecas() {
     try {
@@ -28,6 +37,16 @@ export default function Reposicao() {
   useEffect(() => {
     carregarPecas();
   }, []);
+
+  useEffect(() => {
+    if (!notificacao) return;
+
+    const temporizador = setTimeout(() => {
+      setNotificacao(null);
+    }, 4000);
+
+    return () => clearTimeout(temporizador);
+  }, [notificacao]);
 
   const pecasFiltradas = pecas.filter((peca) =>
     (peca.produto || "").toLowerCase().includes(pesquisa.trim().toLowerCase()),
@@ -64,8 +83,10 @@ export default function Reposicao() {
       setSelecionadas([]);
 
       await carregarPecas();
-
-      alert(resposta.mensagem || "Produtos enviados com sucesso!");
+      exibirNotificacao(
+        "sucesso",
+        resposta.mensagem || "Produtos enviados com sucesso!",
+      );
     } catch (erro) {
       setErro(erro.message || "Não foi possível enviar os produtos.");
     } finally {
@@ -78,6 +99,29 @@ export default function Reposicao() {
       titulo="REPOSIÇÃO"
       pecas={pecas.filter((peca) => Number(peca.status) === 1)}
     >
+      {notificacao && (
+        <div
+          key={notificacao.id}
+          className={`notificacao notificacao-${notificacao.tipo}`}
+          role="status"
+          aria-live="polite"
+        >
+          <span className="notificacao-icone">
+            {notificacao.tipo === "sucesso" ? "✓" : "!"}
+          </span>
+
+          <span className="notificacao-mensagem">{notificacao.mensagem}</span>
+
+          <button
+            type="button"
+            className="notificacao-fechar"
+            onClick={() => setNotificacao(null)}
+            aria-label="Fechar notificação"
+          >
+            ×
+          </button>
+        </div>
+      )}
       <div className="reposicao-toolbar">
         <label className="reposicao-search">
           <input

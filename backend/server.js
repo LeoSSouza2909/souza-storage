@@ -83,13 +83,16 @@ const uploadImportacao = multer({
   },
 });
 
-// Conexão com o MySQL
+// Conexão com o MySQL / TiDB Cloud
 const conexao = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
+  port: Number(process.env.DB_PORT) || 4000,
+
+  ssl: process.env.DB_SSL === "true" ? { minVersion: "TLSv1.2" } : undefined,
+
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -1376,7 +1379,7 @@ app.patch("/api/notificacoes/lidas", autenticar, async (req, res) => {
 });
 
 // Iniciar servidor
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3001;
 
 // LER ARQUIVOS CSV E XLSX
 
@@ -1953,6 +1956,6 @@ app.post(
   },
 );
 
-app.listen(PORT, () => {
-  console.log(`Servidor iniciado em http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Servidor iniciado na porta ${PORT}`);
 });

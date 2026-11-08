@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import logo from "../assets/logo.png";
 import { requisicaoApi } from "../services/api";
+import { useNotification } from "../components/NotificationContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { notificar } = useNotification();
 
   const [usuario, setUsuario] = useState(
     localStorage.getItem("emailLembrado") || "",
@@ -81,6 +83,8 @@ export default function Login() {
       } else {
         localStorage.removeItem("emailLembrado");
       }
+
+      notificar("sucesso", "Login realizado com sucesso!");
 
       navigate("/reposicao");
     } catch (erro) {
@@ -264,7 +268,7 @@ export default function Login() {
       setCodigo(["", "", "", ""]);
       setEmailRecuperacao("");
 
-      alert(resposta.mensagem || "Senha alterada com sucesso!");
+      notificar("sucesso", resposta.mensagem || "Senha alterada com sucesso!");
     } catch (erro) {
       setErroRecuperacao(erro.message);
     } finally {

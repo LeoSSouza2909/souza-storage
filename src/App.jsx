@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { NotificationProvider } from "./components/NotificationContext";
 
 import Login from "./pages/Login";
 import CriarConta from "./pages/CriarConta";
@@ -58,18 +59,20 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            autenticado ? <Navigate to="/reposicao" replace /> : <Login />
-          }
-        />
+      <NotificationProvider>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              autenticado ? <Navigate to="/reposicao" replace /> : <Login />
+            }
+          />
 
-        <Route path="/criar-conta" element={<CriarConta />} />
-        <Route path="/reposicao" element={<Reposicao />} />
-        <Route path="/editar" element={<Editar />} />
-      </Routes>
+          <Route path="/criar-conta" element={<CriarConta />} />
+          <Route path="/reposicao" element={<Reposicao />} />
+          <Route path="/editar" element={<Editar />} />
+        </Routes>
+      </NotificationProvider>
     </BrowserRouter>
   );
 }

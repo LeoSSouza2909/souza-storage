@@ -6,6 +6,8 @@ import { requisicaoApi } from "../services/api";
 export default function Editar() {
   const [pecas, setPecas] = useState([]);
 
+  const [modalExcluirAberta, setModalExcluirAberta] = useState(false);
+
   const [pesquisa, setPesquisa] = useState("");
   const [modalAberta, setModalAberta] = useState(false);
   const [pecaEditando, setPecaEditando] = useState(null);
@@ -22,6 +24,28 @@ export default function Editar() {
   const [modalImportacaoAberta, setModalImportacaoAberta] = useState(false);
   const [arquivoImportacao, setArquivoImportacao] = useState(null);
   const [erroImportacao, setErroImportacao] = useState("");
+
+  // NOTIFICAÇÕES PERSONALIZADAS
+  const [notificacao, setNotificacao] = useState(null);
+
+  function exibirNotificacao(tipo, mensagem) {
+    setNotificacao({
+      tipo,
+      mensagem,
+      id: Date.now(),
+    });
+  }
+
+  // FECHAR NOTIFICAÇÃO AUTOMATICAMENTE
+  useEffect(() => {
+    if (!notificacao) return;
+
+    const temporizador = setTimeout(() => {
+      setNotificacao(null);
+    }, 4000);
+
+    return () => clearTimeout(temporizador);
+  }, [notificacao]);
 
   // CONVERTER OS PRODUTOS DA API PARA O FORMATO DA TELA
   function formatarPecas(produtos) {
@@ -156,7 +180,8 @@ export default function Editar() {
       fecharModalImportacao();
 
       // Informar o resultado
-      alert(
+      exibirNotificacao(
+        "sucesso",
         resposta.mensagem ||
           `${resposta.total} produtos importados com sucesso!`,
       );
@@ -241,6 +266,13 @@ export default function Editar() {
       setPecas(formatarPecas(resposta.produtos || []));
 
       fecharModal();
+
+      exibirNotificacao(
+        "sucesso",
+        pecaEditando
+          ? "Produto atualizado com sucesso!"
+          : "Produto cadastrado com sucesso!",
+      );
     } catch (erro) {
       setErroFormulario(erro.message || "Não foi possível salvar o produto.");
     } finally {
@@ -248,15 +280,16 @@ export default function Editar() {
     }
   }
 
+  // ABRIR CONFIRMAÇÃO DE EXCLUSÃO
+  function confirmarExclusao() {
+    if (!pecaEditando) return;
+
+    setModalExcluirAberta(true);
+  }
+
   // EXCLUIR PRODUTO
   async function excluirPeca() {
     if (!pecaEditando) return;
-
-    const confirmar = window.confirm(
-      `Tem certeza que deseja excluir o produto "${pecaEditando.nome}"?`,
-    );
-
-    if (!confirmar) return;
 
     try {
       setExcluindo(true);
@@ -266,11 +299,16 @@ export default function Editar() {
         method: "DELETE",
       });
 
+      setModalExcluirAberta(false);
+
       await carregarPecas();
 
       fecharModal();
+
+      exibirNotificacao("sucesso", "Produto excluído com sucesso!");
     } catch (erro) {
       setErroFormulario(erro.message || "Não foi possível excluir o produto.");
+      setModalExcluirAberta(false);
     } finally {
       setExcluindo(false);
     }
@@ -278,6 +316,29 @@ export default function Editar() {
 
   return (
     <Layout titulo="EDITAR">
+      {notificacao && (
+        <div
+          key={notificacao.id}
+          className={`notificacao notificacao-${notificacao.tipo}`}
+          role="status"
+          aria-live="polite"
+        >
+          <span className="notificacao-icone">
+            {notificacao.tipo === "sucesso" ? "✓" : "!"}
+          </span>
+
+          <span className="notificacao-mensagem">{notificacao.mensagem}</span>
+
+          <button
+            type="button"
+            className="notificacao-fechar"
+            onClick={() => setNotificacao(null)}
+            aria-label="Fechar notificação"
+          >
+            ×
+          </button>
+        </div>
+      )}
       <div className="reposicao-toolbar editar-toolbar">
         <label className="reposicao-search">
           <input
@@ -453,7 +514,7 @@ export default function Editar() {
                   <button
                     type="button"
                     className="editar-excluir-button"
-                    onClick={excluirPeca}
+                    onClick={confirmarExclusao}
                     disabled={excluindo || salvando}
                   >
                     {excluindo ? "Excluindo..." : "Excluir"}
@@ -476,6 +537,48 @@ export default function Editar() {
           </form>
         </div>
       )}
+
+      {modalExcluirAberta && (
+        <div className="excluir-modal-overlay">
+          <div
+            className="excluir-modal"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="excluir-modal-titulo"
+          >
+            <div className="excluir-modal-icone">!</div>
+
+            <h2 id="excluir-modal-titulo">Excluir produto?</h2>
+
+            <p>
+              Tem certeza de que deseja excluir
+              <strong> {pecaEditando?.nome}</strong>? Essa ação não poderá ser
+              desfeita.
+            </p>
+
+            <div className="excluir-modal-acoes">
+              <button
+                type="button"
+                className="excluir-modal-cancelar"
+                onClick={() => setModalExcluirAberta(false)}
+                disabled={excluindo}
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                className="excluir-modal-confirmar"
+                onClick={excluirPeca}
+                disabled={excluindo}
+              >
+                {excluindo ? "Excluindo..." : "Excluir produto"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {modalImportacaoAberta && (
         <div
           className="importacao-modal-overlay"

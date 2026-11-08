@@ -1605,3 +1605,391 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* =====================================
+   CORREÇÃO DA TELA EDITAR NO CELULAR
+===================================== */
+
+@media (max-width: 600px) {
+  .reposicao-toolbar.editar-toolbar {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 7px;
+    gap: 8px;
+  }
+
+  /* Pesquisa ocupa somente o espaço disponível */
+  .reposicao-toolbar.editar-toolbar .reposicao-search {
+    position: absolute;
+    top: 50%;
+    left: 7px;
+    width: calc(100% - 195px);
+    max-width: none;
+    min-width: 0;
+    height: 29px;
+    transform: translateY(-50%);
+  }
+
+  /* Botões permanecem agrupados à direita */
+  .reposicao-toolbar.editar-toolbar .editar-toolbar-acoes {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+    margin-left: auto;
+  }
+
+  .reposicao-toolbar.editar-toolbar .editar-importar-button {
+    min-width: 0;
+    padding: 0 7px;
+    font-size: 11px;
+  }
+
+  .reposicao-toolbar.editar-toolbar .reposicao-send-button {
+    width: 78px;
+    min-width: 78px;
+    font-size: 11px;
+  }
+}
+
+/* =====================================
+   CORREÇÃO DA MODAL DE EDIÇÃO
+===================================== */
+
+.editar-modal {
+  box-sizing: border-box;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.editar-modal-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+}
+
+.editar-modal-rodape .account-logo-section {
+  flex: 1 1 100%;
+  min-width: 0;
+  margin-bottom: 0;
+  transform: none;
+}
+
+.editar-modal-acoes {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.editar-excluir-button,
+.editar-salvar-button {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-width: 85px;
+  min-height: 34px;
+  height: auto;
+  padding: 6px 12px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+@media (max-width: 600px) {
+  .editar-modal {
+    width: calc(100vw - 32px);
+    max-width: 460px;
+    min-height: 0;
+    height: auto;
+    max-height: 90vh;
+    padding: 18px 14px;
+    gap: 14px;
+  }
+
+  .editar-modal-campos {
+    display: flex;
+    gap: 7px;
+    width: 100%;
+  }
+
+  .editar-modal-campos input {
+    flex: 1;
+    width: 50%;
+    min-width: 0;
+    box-sizing: border-box;
+    font-size: 12px;
+  }
+
+  .editar-modal-rodape {
+    gap: 12px;
+  }
+
+  .editar-modal-acoes {
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .editar-excluir-button,
+  .editar-salvar-button {
+    min-width: 85px;
+    min-height: 36px;
+    font-size: 12px;
+  }
+}
+
+/* =====================================
+   NOTIFICAÇÕES PERSONALIZADAS
+===================================== */
+
+.notificacao {
+  position: fixed;
+  top: 85px;
+  right: 25px;
+  z-index: 99999;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: max-content;
+  max-width: min(390px, calc(100vw - 32px));
+  min-height: 58px;
+
+  padding: 12px 15px;
+
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+
+  box-shadow: 0 5px 22px rgba(0, 0, 0, 0.13);
+
+  animation: notificacao-entrada 0.3s ease forwards;
+}
+
+.notificacao-sucesso {
+  border-left: 5px solid #22a06b;
+}
+
+.notificacao-erro {
+  border-left: 5px solid #dc3545;
+}
+
+.notificacao-aviso {
+  border-left: 5px solid #0865f9;
+}
+
+.notificacao-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 27px;
+  height: 27px;
+
+  border-radius: 50%;
+
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.notificacao-sucesso .notificacao-icone {
+  color: #168653;
+  background: #e5f7ee;
+}
+
+.notificacao-erro .notificacao-icone {
+  color: #dc3545;
+  background: #fdebed;
+}
+
+.notificacao-aviso .notificacao-icone {
+  color: #0865f9;
+  background: #e8f0ff;
+}
+
+.notificacao-mensagem {
+  flex: 1;
+
+  color: #333333;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.notificacao-fechar {
+  border: none;
+  background: transparent;
+
+  color: #888888;
+  font-size: 22px;
+
+  cursor: pointer;
+  padding: 0 3px;
+}
+
+.notificacao-fechar:hover {
+  color: #222222;
+}
+
+@keyframes notificacao-entrada {
+  from {
+    opacity: 0;
+    transform: translateX(25px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .notificacao {
+    top: 70px;
+    right: 12px;
+    max-width: calc(100vw - 24px);
+    min-height: 54px;
+    padding: 10px 12px;
+  }
+
+  .notificacao-mensagem {
+    font-size: 12px;
+  }
+}
+
+/* MODAL DE CONFIRMAÇÃO DE EXCLUSÃO */
+
+.excluir-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000000;
+  animation: excluirFadeIn 0.2s ease;
+}
+
+.excluir-modal {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+  animation: excluirSubir 0.25s ease;
+}
+
+.excluir-modal-icone {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #fff0f0;
+  color: #dc3545;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 700;
+  margin: 0 auto 18px;
+}
+
+.excluir-modal h2 {
+  color: #222;
+  font-size: 22px;
+  margin: 0 0 12px;
+}
+
+.excluir-modal p {
+  color: #777;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 25px;
+}
+
+.excluir-modal p strong {
+  color: #333;
+}
+
+.excluir-modal-acoes {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.excluir-modal-acoes button {
+  flex: 1;
+  min-height: 44px;
+  border: none;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.excluir-modal-cancelar {
+  background: #eeeeef;
+  color: #444;
+}
+
+.excluir-modal-cancelar:hover {
+  background: #dedee0;
+}
+
+.excluir-modal-confirmar {
+  background: #dc3545;
+  color: #fff;
+}
+
+.excluir-modal-confirmar:hover {
+  background: #bd2635;
+}
+
+.excluir-modal-acoes button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@keyframes excluirFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes excluirSubir {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .excluir-modal {
+    padding: 25px 20px;
+  }
+
+  .excluir-modal-acoes {
+    flex-direction: column-reverse;
+  }
+}
