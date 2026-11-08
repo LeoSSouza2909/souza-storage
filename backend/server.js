@@ -5,7 +5,6 @@ require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const autenticar = require("./middleware/autenticar");
-const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
@@ -80,15 +79,6 @@ const conexao = mysql.createPool({
   queueLimit: 0,
 });
 
-// Configuração do Gmail
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
 // Rota inicial
 app.get("/", (req, res) => {
   res.json({
@@ -115,6 +105,31 @@ app.get("/api/teste-banco", async (req, res) => {
     });
   }
 });
+
+async function enviarEmail({ to, subject, text, html }) {
+  const resposta = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: "Souza Storage <onboarding@resend.dev>",
+      to: [to],
+      subject,
+      text,
+      html,
+    }),
+  });
+
+  const resultado = await resposta.json();
+
+  if (!resposta.ok) {
+    throw new Error(resultado.message || "Não foi possível enviar o e-mail.");
+  }
+
+  return resultado;
+}
 
 async function gerarPdfPedido(numeroPedido, produtos, empresa) {
   // Buscar a logo da empresa no Cloudinary ou no armazenamento antigo
@@ -339,23 +354,22 @@ app.post("/api/auth/cadastro", async (req, res) => {
     const codigoHash = await bcrypt.hash(codigo, 10);
 
     // Enviar código pelo Gmail
-    await transporter.sendMail({
-      from: `"Souza Storage" <${process.env.EMAIL_USER}>`,
+    await enviarEmail({
       to: emailLimpo,
       subject: "Confirmação de cadastro - Souza Storage",
       text: `Seu código de confirmação é: ${codigo}. Ele expira em 10 minutos.`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 25px;">
-          <h2 style="color: #0865f9;">Souza Storage</h2>
-          <p>Olá, ${nomeLimpo}!</p>
-          <p>Use o código abaixo para confirmar seu cadastro:</p>
-          <div style="font-size: 32px; font-weight: bold; letter-spacing: 10px; padding: 20px; background: #f1f1f1; text-align: center;">
-            ${codigo}
-          </div>
-          <p>Este código é válido por 10 minutos.</p>
-          <p>Se você não solicitou este cadastro, ignore esta mensagem.</p>
-        </div>
-      `,
+    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 25px;">
+      <h2 style="color: #0865f9;">Souza Storage</h2>
+      <p>Olá, ${nomeLimpo}!</p>
+      <p>Use o código abaixo para confirmar seu cadastro:</p>
+      <div style="font-size: 32px; font-weight: bold; letter-spacing: 10px; padding: 20px; background: #f1f1f1; text-align: center;">
+        ${codigo}
+      </div>
+      <p>Este código é válido por 10 minutos.</p>
+      <p>Se você não solicitou este cadastro, ignore esta mensagem.</p>
+    </div>
+  `,
     });
 
     // Salvar ou atualizar cadastro pendente
@@ -631,23 +645,22 @@ app.post("/api/auth/cadastro/reenviar", async (req, res) => {
     );
 
     // Enviar o novo código pelo Gmail
-    await transporter.sendMail({
-      from: `"Souza Storage" <${process.env.EMAIL_USER}>`,
+    await enviarEmail({
       to: emailLimpo,
       subject: "Novo código de confirmação - Souza Storage",
       text: `Seu novo código de confirmação é: ${codigo}. Ele expira em 10 minutos.`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 25px;">
-          <h2 style="color: #0865f9;">Souza Storage</h2>
-          <p>Você solicitou um novo código de confirmação.</p>
-          <p>Use o código abaixo para confirmar seu cadastro:</p>
-          <div style="font-size: 32px; font-weight: bold; letter-spacing: 10px; padding: 20px; background: #f1f1f1; text-align: center;">
-            ${codigo}
-          </div>
-          <p>Este código é válido por 10 minutos.</p>
-          <p>Se você não solicitou este código, ignore esta mensagem.</p>
-        </div>
-      `,
+    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 25px;">
+      <h2 style="color: #0865f9;">Souza Storage</h2>
+      <p>Você solicitou um novo código de confirmação.</p>
+      <p>Use o código abaixo para confirmar seu cadastro:</p>
+      <div style="font-size: 32px; font-weight: bold; letter-spacing: 10px; padding: 20px; background: #f1f1f1; text-align: center;">
+        ${codigo}
+      </div>
+      <p>Este código é válido por 10 minutos.</p>
+      <p>Se você não solicitou este código, ignore esta mensagem.</p>
+    </div>
+  `,
     });
 
     return res.status(200).json({
@@ -1076,23 +1089,22 @@ async function enviarCodigoRecuperacao(email, nome) {
     [email, codigoHash],
   );
 
-  await transporter.sendMail({
-    from: `"Souza Storage" <${process.env.EMAIL_USER}>`,
+  await enviarEmail({
     to: email,
     subject: "Recuperação de senha - Souza Storage",
     text: `Olá, ${nome}. Seu código de recuperação é: ${codigo}. Ele expira em 10 minutos.`,
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 25px;">
-        <h2 style="color: #0865f9;">Souza Storage</h2>
-        <p>Olá, ${nome}!</p>
-        <p>Use o código abaixo para recuperar sua senha:</p>
-        <div style="font-size: 32px; font-weight: bold; letter-spacing: 10px; padding: 20px; background: #f1f1f1; text-align: center;">
-          ${codigo}
-        </div>
-        <p>Este código é válido por 10 minutos.</p>
-        <p>Se você não solicitou a recuperação, ignore esta mensagem.</p>
+    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 25px;">
+      <h2 style="color: #0865f9;">Souza Storage</h2>
+      <p>Olá, ${nome}!</p>
+      <p>Use o código abaixo para recuperar sua senha:</p>
+      <div style="font-size: 32px; font-weight: bold; letter-spacing: 10px; padding: 20px; background: #f1f1f1; text-align: center;">
+        ${codigo}
       </div>
-    `,
+      <p>Este código é válido por 10 minutos.</p>
+      <p>Se você não solicitou a recuperação, ignore esta mensagem.</p>
+    </div>
+  `,
   });
 }
 
